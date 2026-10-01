@@ -331,73 +331,99 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col h-screen w-screen overflow-hidden bg-[#FBF9F6] dark:bg-[#0C0D10] text-zinc-900 dark:text-zinc-100 font-sans">
-      {/* Mobile Top Navigation Header (< lg) */}
-      <header className="lg:hidden px-4 py-2.5 bg-white/95 dark:bg-[#111216]/95 backdrop-blur-md border-b border-[#E6E2D9] dark:border-[#242730] flex items-center justify-between shrink-0 z-20">
-        <div className="flex items-center gap-2.5">
+    <main className="flex flex-col h-screen w-screen overflow-hidden bg-[#F7F5F0] dark:bg-[#07080A] text-zinc-900 dark:text-zinc-100 font-sans p-2.5 sm:p-3 gap-2.5 sm:gap-3 luxury-ambient-mesh subtle-legal-grid">
+      {/* Top Floating Command Island Navigation Bar */}
+      <header className="h-13 shrink-0 rounded-2xl glass-floating-island px-4 flex items-center justify-between z-20">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setIsMobileSidebarOpen(true)}
-            className="p-1.5 -ml-1 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md"
+            className="lg:hidden p-1.5 -ml-1 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md"
             title="Open contract drawer"
           >
             <Menu className="w-5 h-5 text-[#C5A880]" />
           </button>
 
-          <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 rounded bg-[#16171B] dark:bg-[#F2F1EE] flex items-center justify-center text-[#C5A880] dark:text-[#8F6E3B]">
-              <Scale className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-[#16171B] dark:bg-[#F2F1EE] flex items-center justify-center text-[#C5A880] dark:text-[#8F6E3B] shadow-2xs">
+              <Scale className="w-4 h-4" />
             </div>
-            <span className="font-serif font-bold text-xs tracking-tight text-zinc-900 dark:text-zinc-100">
-              ClauseLens
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-serif font-bold text-sm tracking-tight text-zinc-900 dark:text-zinc-100">
+                ClauseLens
+              </span>
+              <span className="hidden sm:inline-block font-mono text-[9px] uppercase tracking-wider font-bold text-[#8F6E3B] dark:text-[#D8BE96] bg-[#C5A880]/15 px-2 py-0.5 rounded-full border border-[#C5A880]/20">
+                COUNSEL ATELIER
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Mobile View Switcher Segmented Control */}
-        <div className="flex items-center bg-[#FAF8F5] dark:bg-zinc-850 border border-[#E6E2D9] dark:border-[#2C303B] rounded-lg p-0.5 text-xs font-mono">
-          <button
-            onClick={() => setActiveMobileTab("chat")}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
-              activeMobileTab === "chat"
-                ? "bg-white dark:bg-[#15171D] text-zinc-900 dark:text-zinc-100 font-semibold shadow-2xs"
-                : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
-            }`}
-          >
-            <MessageSquare className="w-3 h-3" />
-            <span>Chat</span>
-          </button>
-
-          <button
-            onClick={() => setActiveMobileTab("viewer")}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors relative ${
-              activeMobileTab === "viewer"
-                ? "bg-white dark:bg-[#15171D] text-zinc-900 dark:text-zinc-100 font-semibold shadow-2xs"
-                : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
-            }`}
-          >
-            <FileText className="w-3 h-3" />
-            <span>Document</span>
-            {activeHighlight && (
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] animate-ping absolute top-1 right-1" />
-            )}
-          </button>
+        {/* Center Live Grounding Beacon (Visible md+) */}
+        <div className="hidden md:flex items-center gap-3 font-mono text-[10px] text-zinc-500 dark:text-zinc-400 bg-white/60 dark:bg-black/20 px-3.5 py-1 rounded-full border border-[#E6E2D9] dark:border-[#262A34]">
+          <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>GROUNDED ENGINE ACTIVE</span>
+          </div>
+          <span className="text-zinc-300 dark:text-zinc-700">|</span>
+          <span>100% CITED EVIDENCE</span>
+          <span className="text-zinc-300 dark:text-zinc-700">|</span>
+          <span>0% FABRICATION TOLERANCE</span>
         </div>
 
-        {documents.length >= 2 && (
-          <button
-            onClick={() => setIsCompareOpen(true)}
-            className="p-1.5 text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
-            title="Compare contracts"
-          >
-            <GitCompare className="w-4 h-4 text-[#C5A880]" />
-          </button>
-        )}
+        {/* Right Actions */}
+        <div className="flex items-center gap-2">
+          {/* Mobile View Switcher Segmented Control (< lg) */}
+          <div className="flex lg:hidden items-center bg-[#FAF8F5] dark:bg-zinc-850 border border-[#E6E2D9] dark:border-[#2C303B] rounded-lg p-0.5 text-xs font-mono">
+            <button
+              onClick={() => setActiveMobileTab("chat")}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors ${
+                activeMobileTab === "chat"
+                  ? "bg-white dark:bg-[#15171D] text-zinc-900 dark:text-zinc-100 font-semibold shadow-2xs"
+                  : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
+              }`}
+            >
+              <MessageSquare className="w-3 h-3" />
+              <span>Chat</span>
+            </button>
+
+            <button
+              onClick={() => setActiveMobileTab("viewer")}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-colors relative ${
+                activeMobileTab === "viewer"
+                  ? "bg-white dark:bg-[#15171D] text-zinc-900 dark:text-zinc-100 font-semibold shadow-2xs"
+                  : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
+              }`}
+            >
+              <FileText className="w-3 h-3" />
+              <span>Document</span>
+              {activeHighlight && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] animate-ping absolute top-1 right-1" />
+              )}
+            </button>
+          </div>
+
+          {/* Desktop Substantive Diff Button */}
+          {documents.length >= 2 && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setIsCompareOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-zinc-800 dark:text-zinc-200 bg-white dark:bg-[#161822] hover:border-[#C5A880] border border-[#E6E2D9] dark:border-[#2C303B] rounded-xl transition-all shadow-2xs group"
+            >
+              <GitCompare className="w-3.5 h-3.5 text-[#C5A880]" />
+              <span className="font-sans font-semibold">Substantive Diff</span>
+              <span className="hidden sm:inline font-mono text-[10px] text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300">
+                (Compare)
+              </span>
+            </motion.button>
+          )}
+        </div>
       </header>
 
-      {/* Main Workspace Area */}
-      <div className="flex-1 flex overflow-hidden relative">
+      {/* Main Workspace Area - 3 Docked Atelier Slates */}
+      <div className="flex-1 flex gap-2.5 sm:gap-3 overflow-hidden min-h-0 relative">
         {/* Desktop Left Sidebar (>= lg) */}
-        <div className="hidden lg:flex shrink-0">
+        <div className="hidden lg:flex w-76 xl:w-80 h-full shrink-0 rounded-2xl overflow-hidden atelier-slate">
           <Sidebar
             documents={documents}
             selectedDocIds={selectedDocIds}
@@ -428,7 +454,7 @@ export default function Home() {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "spring", stiffness: 350, damping: 32 }}
-                className="relative w-80 max-w-[85vw] h-full z-10 shadow-2xl"
+                className="relative w-80 max-w-[85vw] h-full z-10 shadow-2xl rounded-r-2xl overflow-hidden"
               >
                 <Sidebar
                   documents={documents}
@@ -451,30 +477,33 @@ export default function Home() {
           )}
         </AnimatePresence>
 
-        {/* Responsive Content Switching */}
-        {/* Desktop View: Both ChatArea and DocumentViewer rendered side-by-side */}
-        <div className="hidden lg:flex flex-1 h-full overflow-hidden">
-          <ChatArea
-            selectedDocs={documents.filter((d) => selectedDocIds.includes(d.id))}
-            messages={messages}
-            isLoading={isLoading}
-            activeSteps={activeSteps}
-            onSendMessage={handleSendMessage}
-            onStopGeneration={handleStopGeneration}
-            onOpenCitation={handleOpenCitation}
-            activeDocText={activeViewerDoc?.extractedText || ""}
-          />
+        {/* Desktop View: ChatArea and DocumentViewer Docked Side-by-Side */}
+        <div className="hidden lg:flex flex-1 gap-2.5 sm:gap-3 h-full overflow-hidden min-w-0">
+          <div className="flex-1 h-full rounded-2xl overflow-hidden atelier-slate min-w-0">
+            <ChatArea
+              selectedDocs={documents.filter((d) => selectedDocIds.includes(d.id))}
+              messages={messages}
+              isLoading={isLoading}
+              activeSteps={activeSteps}
+              onSendMessage={handleSendMessage}
+              onStopGeneration={handleStopGeneration}
+              onOpenCitation={handleOpenCitation}
+              activeDocText={activeViewerDoc?.extractedText || ""}
+            />
+          </div>
 
-          <DocumentViewer
-            document={activeViewerDoc}
-            activeHighlight={activeHighlight}
-            onClearHighlight={() => setActiveHighlight(null)}
-            onCloseViewer={() => setActiveViewerDoc(null)}
-          />
+          <div className="flex-1 h-full rounded-2xl overflow-hidden atelier-slate min-w-0">
+            <DocumentViewer
+              document={activeViewerDoc}
+              activeHighlight={activeHighlight}
+              onClearHighlight={() => setActiveHighlight(null)}
+              onCloseViewer={() => setActiveViewerDoc(null)}
+            />
+          </div>
         </div>
 
-        {/* Mobile View: Shows either ChatArea or DocumentViewer based on activeMobileTab */}
-        <div className="flex lg:hidden flex-1 h-full overflow-hidden">
+        {/* Mobile View: Shows either ChatArea or DocumentViewer Slate based on activeMobileTab */}
+        <div className="flex lg:hidden flex-1 h-full overflow-hidden rounded-2xl atelier-slate min-w-0">
           {activeMobileTab === "chat" ? (
             <ChatArea
               selectedDocs={documents.filter((d) => selectedDocIds.includes(d.id))}

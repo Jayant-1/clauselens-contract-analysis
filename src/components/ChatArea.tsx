@@ -100,34 +100,6 @@ export function ChatArea({
     setTimeout(() => setCopiedCitationId(null), 2000);
   };
 
-  const lawyerQuickPrompts = [
-    {
-      category: "RISK EXPOSURE",
-      label: "Liability & Cap Audit",
-      prompt: "What is the limitation of liability cap and what exceptions apply to it?",
-    },
-    {
-      category: "OPERATIONAL EXIT",
-      label: "Termination & Notice",
-      prompt: "What are the termination for convenience and termination for cause notice periods?",
-    },
-    {
-      category: "CHOICE OF LAW",
-      label: "Governing Law & Forum",
-      prompt: "Which state's governing law applies, and what is the dispute resolution venue?",
-    },
-    {
-      category: "DEFENSE SHIELD",
-      label: "Indemnification Scope",
-      prompt: "What are the indemnification obligations and defense triggers for each party?",
-    },
-    {
-      category: "IP & SURVIVAL",
-      label: "Confidentiality Term",
-      prompt: "What is the confidentiality term and does it survive contract termination?",
-    },
-  ];
-
   const renderToolIcon = (tool: string) => {
     switch (tool) {
       case "search_document":
@@ -142,7 +114,7 @@ export function ChatArea({
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#FBF9F6] dark:bg-[#0A0B0E] border-r border-[#E6E2D9] dark:border-[#222530] overflow-hidden">
+    <div className="w-full flex flex-col h-full bg-white dark:bg-[#0F1116] overflow-hidden">
       {/* Top Docket Header */}
       <header className="px-4 lg:px-5 py-3 border-b border-[#E6E2D9] dark:border-[#222530] bg-white/90 dark:bg-[#101217]/90 backdrop-blur-md flex items-center justify-between shrink-0 z-10 shadow-2xs">
         <div className="flex items-center gap-3">
@@ -289,45 +261,120 @@ export function ChatArea({
             </p>
           </div>
         ) : messages.length === 0 && !isLoading ? (
-          <div className="h-full flex flex-col items-center justify-center text-center p-6 max-w-2xl mx-auto">
-            <div className="w-14 h-14 rounded-2xl bg-[#16171B] dark:bg-[#F2F1EE] text-[#C5A880] dark:text-[#8F6E3B] flex items-center justify-center mb-4 shadow-md">
-              <Scale className="w-7 h-7" />
+          <div className="h-full flex flex-col items-center justify-center p-4 max-w-2xl mx-auto my-auto">
+            {/* Chamber Crest */}
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-[#16171B] dark:bg-[#F2F1EE] text-[#C5A880] dark:text-[#8F6E3B] flex items-center justify-center mb-3 shadow-md border border-zinc-800/40">
+                <Scale className="w-6 h-6" />
+              </div>
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#C5A880]/15 text-[#8F6E3B] dark:text-[#D8BE96] font-mono text-[9px] font-bold uppercase tracking-widest border border-[#C5A880]/20 mb-1.5">
+                MATTER INQUIRY CHAMBER
+              </div>
+              <h3 className="font-serif text-xl sm:text-2xl font-medium text-zinc-900 dark:text-zinc-100 tracking-tight">
+                Clause-Grounded Due Diligence
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-md mt-1.5 leading-relaxed font-sans">
+                Every assertion is verified against exact contract clauses. Run structured diligence audits below or type custom counsel inquiries:
+              </p>
             </div>
-            <h3 className="font-serif text-xl font-medium text-zinc-900 dark:text-zinc-100 tracking-tight">
-              Contract Intelligence Workbench
-            </h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-md mt-2 leading-relaxed">
-              Every finding is grounded exclusively in verified verbatim contract text. Select a structured legal inquiry or enter a custom prompt:
-            </p>
 
-            {/* Tactile Diligence Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full mt-6 text-left">
-              {lawyerQuickPrompts.map((item) => (
+            {/* Asymmetrical Diligence Bento Grid */}
+            <div className="w-full space-y-2.5 text-left">
+              {/* Primary Hero Card */}
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => onSendMessage("What is the limitation of liability cap and what exceptions apply to it?")}
+                className="group w-full p-4 rounded-xl border border-[#E6E2D9] dark:border-[#252834] bg-gradient-to-br from-white via-zinc-50/50 to-[#FAF8F4]/50 dark:from-[#13151D] dark:to-[#0F1116] hover:border-[#C5A880] dark:hover:border-[#C5A880]/70 transition-all shadow-xs flex items-center justify-between gap-4"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[9px] font-mono font-bold tracking-wider text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded">
+                      HIGH EXPOSURE AUDIT
+                    </span>
+                    <span className="text-[10px] font-mono text-zinc-400">Section 4 Risk</span>
+                  </div>
+                  <div className="font-serif text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Limitation of Liability &amp; Super-Cap Exclusions
+                  </div>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-md">
+                    Audit aggregate liability caps, consequential damage waivers, defense triggers, and uncapped breach exceptions.
+                  </p>
+                </div>
+
+                <div className="w-8 h-8 rounded-full bg-[#16171B] dark:bg-[#F2F1EE] text-white dark:text-[#16171B] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
+                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </div>
+              </motion.button>
+
+              {/* Secondary Bento Grid (3 columns) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <motion.button
-                  key={item.label}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => onSendMessage(item.prompt)}
-                  className="group relative p-3 rounded-xl border border-[#E6E2D9] dark:border-[#262A36] bg-white dark:bg-[#13151D] hover:border-[#C5A880] dark:hover:border-[#C5A880]/60 transition-all shadow-xs flex flex-col justify-between"
+                  onClick={() => onSendMessage("What are the termination for convenience and termination for cause notice periods?")}
+                  className="group p-3 rounded-xl border border-[#E6E2D9] dark:border-[#252834] bg-white dark:bg-[#13151D] hover:border-[#C5A880] dark:hover:border-[#C5A880]/70 transition-all shadow-xs flex flex-col justify-between text-left"
                 >
                   <div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-mono font-bold tracking-wider text-[#8F6E3B] dark:text-[#D8BE96]">
-                        {item.category}
+                      <span className="text-[9px] font-mono font-bold text-emerald-700 dark:text-[#86EFAC] bg-emerald-50 dark:bg-emerald-950/30 px-1.5 py-0.2 rounded">
+                        EXIT NOTICE
                       </span>
-                      <div className="w-5 h-5 rounded-full bg-zinc-100 dark:bg-[#1E212D] text-zinc-500 group-hover:text-zinc-900 dark:group-hover:text-white flex items-center justify-center transition-colors">
-                        <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                      </div>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
-                    <div className="font-serif text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-1">
-                      {item.label}
+                    <div className="font-serif text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-2">
+                      Termination &amp; Notice
                     </div>
                   </div>
-                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-2 line-clamp-2 leading-relaxed">
-                    {item.prompt}
+                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
+                    Convenience vs breach cure periods
                   </p>
                 </motion.button>
-              ))}
+
+                <motion.button
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => onSendMessage("Which state's governing law applies, and what is the dispute resolution venue?")}
+                  className="group p-3 rounded-xl border border-[#E6E2D9] dark:border-[#252834] bg-white dark:bg-[#13151D] hover:border-[#C5A880] dark:hover:border-[#C5A880]/70 transition-all shadow-xs flex flex-col justify-between text-left"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-mono font-bold text-[#8F6E3B] dark:text-[#D8BE96] bg-[#C5A880]/15 px-1.5 py-0.2 rounded">
+                        CHOICE OF LAW
+                      </span>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </div>
+                    <div className="font-serif text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-2">
+                      Governing Law &amp; Venue
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
+                    Jurisdiction &amp; conflict of law forum
+                  </p>
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => onSendMessage("What is the confidentiality term and does it survive contract termination?")}
+                  className="group p-3 rounded-xl border border-[#E6E2D9] dark:border-[#252834] bg-white dark:bg-[#13151D] hover:border-[#C5A880] dark:hover:border-[#C5A880]/70 transition-all shadow-xs flex flex-col justify-between text-left"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-mono font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/30 px-1.5 py-0.2 rounded">
+                        IP SURVIVAL
+                      </span>
+                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </div>
+                    <div className="font-serif text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-2">
+                      Confidentiality Term
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
+                    Trade secret protection &amp; post-term survival
+                  </p>
+                </motion.button>
+              </div>
             </div>
           </div>
         ) : (

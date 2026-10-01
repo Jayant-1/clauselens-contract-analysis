@@ -3,7 +3,6 @@
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  FileText,
   UploadCloud,
   Trash2,
   CheckSquare,
@@ -13,6 +12,7 @@ import {
   AlertCircle,
   Loader2,
   X,
+  FolderOpen,
 } from "lucide-react";
 import { DocumentSummary } from "@/types";
 
@@ -129,24 +129,24 @@ export function Sidebar({
   };
 
   return (
-    <aside className="w-full lg:w-72 border-r border-[#E6E2D9] dark:border-[#242730] bg-[#FBF9F6] dark:bg-[#0C0D10] flex flex-col h-full select-none">
-      {/* Brand Header */}
-      <div className="px-4 py-3.5 border-b border-[#E6E2D9] dark:border-[#242730] flex items-center justify-between">
+    <aside className="w-full flex flex-col h-full select-none bg-white dark:bg-[#0F1116] overflow-hidden">
+      {/* Dossier Header */}
+      <div className="px-4 py-3 border-b border-[#E6E2D9] dark:border-[#222530] flex items-center justify-between bg-zinc-50/50 dark:bg-[#12141C]/50 shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-[#16171B] dark:bg-[#F2F1EE] flex items-center justify-center text-[#C5A880] dark:text-[#8F6E3B] shadow-xs">
-            <Scale className="w-4 h-4" />
+          <div className="w-7 h-7 rounded-lg bg-[#16171B] dark:bg-[#F2F1EE] flex items-center justify-center text-[#C5A880] dark:text-[#8F6E3B] shadow-2xs">
+            <FolderOpen className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h1 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm tracking-tight leading-none font-serif">
-                ClauseLens
+              <h1 className="font-semibold text-zinc-900 dark:text-zinc-100 text-xs tracking-wider uppercase font-mono">
+                Matter Dossier
               </h1>
-              <span className="text-[9px] font-mono uppercase px-1 py-0.2 rounded bg-[#C5A880]/15 text-[#8F6E3B] dark:text-[#D8BE96] font-bold">
-                LEGAL
+              <span className="text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-[#C5A880]/15 text-[#8F6E3B] dark:text-[#D8BE96] font-bold">
+                {documents.length}
               </span>
             </div>
             <p className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 mt-0.5">
-              Verified Contract Intelligence
+              Indexed Evidence Base
             </p>
           </div>
         </div>
@@ -157,10 +157,10 @@ export function Sidebar({
               whileTap={{ scale: 0.96 }}
               onClick={onOpenCompareModal}
               title="Compare two contract versions"
-              className="flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-[#14161B] hover:border-[#C5A880]/50 border border-[#E6E2D9] dark:border-[#242730] rounded-md transition-colors shadow-2xs"
+              className="lg:hidden flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-[#14161B] hover:border-[#C5A880]/50 border border-[#E6E2D9] dark:border-[#242730] rounded-md transition-colors shadow-2xs"
             >
               <GitCompare className="w-3 h-3 text-[#C5A880]" />
-              Compare
+              <span>Compare</span>
             </motion.button>
           )}
 
@@ -176,59 +176,61 @@ export function Sidebar({
         </div>
       </div>
 
-      {/* Upload Dropzone */}
-      <div className="p-3">
-        <motion.div
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.99 }}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={handleDrop}
-          onClick={() => !isUploading && fileInputRef.current?.click()}
-          className={`border border-dashed rounded-lg p-3.5 text-center cursor-pointer transition-all ${
-            isUploading
-              ? "border-[#C5A880] bg-[#C5A880]/5 dark:bg-[#C5A880]/10"
-              : "border-[#D5CFC4] dark:border-[#2C303B] hover:border-[#C5A880] dark:hover:border-[#C5A880]/70 bg-white dark:bg-[#14161B]/60 shadow-2xs"
-          }`}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            onChange={handleFileChange}
-            className="hidden"
-          />
+      {/* Intake Deposit Compartment (Upload) */}
+      <div className="p-3 shrink-0">
+        <div className="p-1 rounded-xl bg-gradient-to-b from-[#C5A880]/15 via-zinc-100/50 to-transparent dark:from-[#C5A880]/10 dark:via-[#161822] dark:to-transparent border border-[#C5A880]/20">
+          <motion.div
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleDrop}
+            onClick={() => !isUploading && fileInputRef.current?.click()}
+            className={`rounded-lg p-3 text-center cursor-pointer transition-all ${
+              isUploading
+                ? "border border-[#C5A880] bg-[#C5A880]/10"
+                : "border border-dashed border-[#D5CFC4] dark:border-[#2C303B] hover:border-[#C5A880] bg-white dark:bg-[#12141A] shadow-2xs"
+            }`}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              onChange={handleFileChange}
+              className="hidden"
+            />
 
-          {isUploading ? (
-            <div className="space-y-2 py-0.5">
-              <div className="flex items-center justify-center gap-1.5 text-xs font-mono text-[#8F6E3B] dark:text-[#D8BE96]">
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>{uploadStatusText}</span>
+            {isUploading ? (
+              <div className="space-y-2 py-1">
+                <div className="flex items-center justify-center gap-1.5 text-xs font-mono text-[#8F6E3B] dark:text-[#D8BE96]">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>{uploadStatusText}</span>
+                </div>
+                <div className="w-full bg-[#E6E2D9] dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                  <motion.div
+                    className="bg-[#C5A880] h-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${uploadProgress}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
               </div>
-              <div className="w-full bg-[#E6E2D9] dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-                <motion.div
-                  className="bg-[#C5A880] h-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${uploadProgress}%` }}
-                  transition={{ duration: 0.3 }}
-                />
+            ) : (
+              <div className="flex items-center justify-center gap-2.5 text-zinc-600 dark:text-zinc-400 py-0.5">
+                <div className="w-7 h-7 rounded-lg bg-[#FAF8F5] dark:bg-zinc-800 flex items-center justify-center text-[#8F6E3B] dark:text-[#D8BE96] shrink-0 border border-[#E6E2D9] dark:border-zinc-700">
+                  <UploadCloud className="w-4 h-4" />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-sans">
+                    Intake Contract Matter
+                  </p>
+                  <p className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">
+                    PDF or DOCX (150+ pages)
+                  </p>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center gap-2.5 text-zinc-600 dark:text-zinc-400">
-              <div className="w-8 h-8 rounded-full bg-[#F4F1EA] dark:bg-zinc-800/80 flex items-center justify-center text-[#8F6E3B] dark:text-[#D8BE96] shrink-0">
-                <UploadCloud className="w-4 h-4" />
-              </div>
-              <div className="text-left">
-                <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100">
-                  Upload Contract
-                </p>
-                <p className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">
-                  PDF / DOCX (150+ pages)
-                </p>
-              </div>
-            </div>
-          )}
-        </motion.div>
+            )}
+          </motion.div>
+        </div>
 
         {/* Error notification banner */}
         <AnimatePresence>
@@ -237,7 +239,7 @@ export function Sidebar({
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
-              className="mt-2.5 p-2.5 bg-[#FDF0F0] dark:bg-red-950/30 border border-[#A82E2E]/20 rounded-md text-[#A82E2E] dark:text-red-300 text-xs flex items-start gap-2"
+              className="mt-2 p-2.5 bg-[#FDF0F0] dark:bg-red-950/30 border border-[#A82E2E]/20 rounded-md text-[#A82E2E] dark:text-red-300 text-xs flex items-start gap-2"
             >
               <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
               <div className="flex-1 leading-relaxed text-[11px]">{errorMessage}</div>
@@ -252,21 +254,21 @@ export function Sidebar({
         </AnimatePresence>
       </div>
 
-      {/* Library Controls */}
-      <div className="px-3.5 py-1.5 flex items-center justify-between text-[11px] font-mono text-zinc-400 dark:text-zinc-500">
-        <span className="tracking-wider">CONTRACTS ({documents.length})</span>
+      {/* Library Selection Controls */}
+      <div className="px-4 py-1.5 flex items-center justify-between text-[10px] font-mono text-zinc-400 dark:text-zinc-500 border-b border-[#E6E2D9]/70 dark:border-[#222530] shrink-0">
+        <span className="tracking-wider uppercase font-semibold">AGREEMENTS ({documents.length})</span>
         {documents.length > 1 && (
-          <div className="flex items-center gap-1.5 text-[10px]">
+          <div className="flex items-center gap-2">
             <button
               onClick={onSelectAllDocs}
-              className="hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors"
+              className="hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
             >
-              Select All
+              All
             </button>
-            <span>/</span>
+            <span>•</span>
             <button
               onClick={onDeselectAllDocs}
-              className="hover:text-zinc-900 dark:hover:text-zinc-200 transition-colors"
+              className="hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
             >
               Clear
             </button>
@@ -275,41 +277,35 @@ export function Sidebar({
       </div>
 
       {/* Documents List */}
-      <div className="flex-1 overflow-y-auto px-3 space-y-1.5 scrollbar-thin">
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin">
         {documents.length === 0 ? (
-          <div className="text-center py-12 px-3">
-            <div className="w-10 h-10 rounded-full bg-[#F4F1EA] dark:bg-zinc-800/60 flex items-center justify-center mx-auto mb-2 text-zinc-400">
-              <FileText className="w-5 h-5" />
-            </div>
-            <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+          <div className="h-44 flex flex-col items-center justify-center text-center p-4">
+            <Scale className="w-6 h-6 text-zinc-300 dark:text-zinc-700 mb-2" />
+            <p className="text-xs font-serif text-zinc-600 dark:text-zinc-400 font-medium">
               No contracts loaded
             </p>
-            <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-0.5 leading-relaxed">
-              Upload an agreement to analyze clauses with verified citations.
+            <p className="text-[10px] text-zinc-400 dark:text-zinc-500 mt-1 max-w-[180px]">
+              Drop contract PDF or DOCX files above to index clauses.
             </p>
           </div>
         ) : (
           documents.map((doc) => {
             const isSelected = selectedDocIds.includes(doc.id);
-            const isViewerActive = activeViewerDocId === doc.id;
+            const isActiveViewer = activeViewerDocId === doc.id;
 
             return (
               <motion.div
                 key={doc.id}
-                whileHover={{ scale: 1.008 }}
-                whileTap={{ scale: 0.99 }}
-                className={`group relative rounded-lg border p-2.5 transition-colors cursor-pointer ${
-                  isViewerActive
-                    ? "bg-white dark:bg-[#14161B] border-[#C5A880] shadow-xs"
-                    : "bg-white dark:bg-[#14161B]/50 border-[#E6E2D9] dark:border-[#242730] hover:border-[#D5CFC4] dark:hover:border-zinc-700"
+                whileHover={{ y: -1 }}
+                onClick={() => onOpenDocInViewer(doc.id)}
+                className={`group relative rounded-xl p-2.5 cursor-pointer transition-all border ${
+                  isActiveViewer
+                    ? "bg-[#FAF8F4] dark:bg-[#161822] border-[#C5A880] dark:border-[#C5A880]/80 shadow-2xs"
+                    : "bg-white dark:bg-[#12141A] border-[#E6E2D9] dark:border-[#222530] hover:border-[#C5A880]/50"
                 }`}
-                onClick={() => {
-                  onOpenDocInViewer(doc.id);
-                  if (onCloseMobile) onCloseMobile();
-                }}
               >
-                <div className="flex items-start gap-2">
-                  {/* Select for chat checkbox */}
+                <div className="flex items-start gap-2.5">
+                  {/* Select for inquiry checkbox */}
                   <button
                     type="button"
                     onClick={(e) => {
@@ -320,24 +316,24 @@ export function Sidebar({
                     className="mt-0.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 shrink-0"
                   >
                     {isSelected ? (
-                      <CheckSquare className="w-3.5 h-3.5 text-[#8F6E3B] dark:text-[#D8BE96]" />
+                      <CheckSquare className="w-4 h-4 text-[#8F6E3B] dark:text-[#D8BE96]" />
                     ) : (
-                      <Square className="w-3.5 h-3.5 text-zinc-300 dark:text-zinc-700" />
+                      <Square className="w-4 h-4 text-zinc-300 dark:text-zinc-700" />
                     )}
                   </button>
 
                   {/* Doc details */}
                   <div className="flex-1 min-w-0">
                     <p
-                      className="text-xs font-medium text-zinc-900 dark:text-zinc-100 truncate"
+                      className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate font-sans"
                       title={doc.name}
                     >
                       {doc.name}
                     </p>
 
-                    <div className="flex items-center gap-1.5 mt-1 font-mono text-[10px]">
+                    <div className="flex items-center gap-1.5 mt-1 font-mono text-[9px]">
                       <span
-                        className={`px-1 py-0.2 rounded text-[9px] font-semibold ${
+                        className={`px-1.5 py-0.2 rounded font-bold ${
                           doc.fileType === "pdf"
                             ? "bg-[#FDF0F0] text-[#A82E2E] dark:bg-red-950/40 dark:text-red-300"
                             : "bg-[#EBF5FA] text-[#1F6C9F] dark:bg-blue-950/40 dark:text-blue-300"
@@ -347,7 +343,7 @@ export function Sidebar({
                       </span>
 
                       <span className="text-zinc-400 dark:text-zinc-500">
-                        {doc.pageCount}p
+                        {doc.pageCount} {doc.pageCount === 1 ? "page" : "pages"}
                       </span>
 
                       <span className="text-zinc-300 dark:text-zinc-700">•</span>
@@ -377,16 +373,19 @@ export function Sidebar({
         )}
       </div>
 
-      {/* Selected indicator footer */}
-      <div className="p-3 border-t border-[#E6E2D9] dark:border-[#242730] bg-[#FBF9F6] dark:bg-[#0C0D10]">
-        <div className="flex items-center justify-between text-[11px] text-zinc-600 dark:text-zinc-400 font-mono">
+      {/* Selected Scope Footer */}
+      <div className="p-3 border-t border-[#E6E2D9] dark:border-[#222530] bg-zinc-50/50 dark:bg-[#12141C]/50 shrink-0">
+        <div className="flex items-center justify-between text-[10px] text-zinc-600 dark:text-zinc-400 font-mono">
           <span className="flex items-center gap-1.5">
             <span
               className={`w-2 h-2 rounded-full ${
-                selectedDocIds.length > 0 ? "bg-[#10B981] animate-pulse" : "bg-zinc-300 dark:bg-zinc-700"
+                selectedDocIds.length > 0 ? "bg-emerald-500 animate-pulse" : "bg-zinc-300 dark:bg-zinc-700"
               }`}
             />
-            {selectedDocIds.length} active in query scope
+            <span>{selectedDocIds.length} in inquiry scope</span>
+          </span>
+          <span className="text-[9px] text-[#8F6E3B] dark:text-[#D8BE96] font-semibold">
+            STRICT GROUNDING
           </span>
         </div>
       </div>

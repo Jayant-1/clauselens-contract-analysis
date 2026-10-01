@@ -208,7 +208,7 @@ export function DocumentViewer({
   };
 
   return (
-    <div className="w-full lg:w-[48%] flex flex-col h-full bg-[#FAF8F5] dark:bg-[#0C0D10] border-l border-[#E6E2D9] dark:border-[#242730] overflow-hidden relative">
+    <div className="w-full flex flex-col h-full bg-[#FAF8F5] dark:bg-[#0F1116] overflow-hidden relative">
       {/* Top Controls Toolbar */}
       <header className="px-4 py-2.5 bg-white/95 dark:bg-[#111216]/95 backdrop-blur-md border-b border-[#E6E2D9] dark:border-[#242730] flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-2 min-w-0">
@@ -331,11 +331,11 @@ export function DocumentViewer({
             {/* Synchronized Exact Text Layer with Interactive Highlighting */}
             <div
               style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: "top center" }}
-              className="w-full max-w-2xl bg-white dark:bg-[#14161B] rounded-lg p-6 lg:p-8 border border-[#E6E2D9] dark:border-[#262A34] font-serif text-xs leading-relaxed text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap select-text shadow-xs"
+              className="w-full max-w-2xl parchment-sheet rounded-xl p-6 lg:p-8 font-serif text-xs leading-relaxed text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap select-text"
             >
               <div className="border-b border-[#E6E2D9]/70 dark:border-[#262A34] pb-2 mb-4 flex items-center justify-between font-mono text-[10px] text-zinc-400">
-                <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3 text-[#C5A880]" />
+                <span className="flex items-center gap-1.5 font-semibold text-[#8F6E3B] dark:text-[#D8BE96]">
+                  <Sparkles className="w-3.5 h-3.5 text-[#C5A880]" />
                   DOCUMENT SYNCHRONIZED TEXT LAYER (PAGE {currentPage})
                 </span>
                 <span>{currentPageData?.text.length || 0} characters</span>
@@ -351,7 +351,7 @@ export function DocumentViewer({
           <div
             ref={docxContentRef}
             style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: "top center" }}
-            className="w-full max-w-2xl bg-white dark:bg-[#14161B] rounded-lg p-6 lg:p-8 border border-[#E6E2D9] dark:border-[#262A34] text-xs leading-relaxed text-zinc-800 dark:text-zinc-200 select-text prose dark:prose-invert max-w-none shadow-xs font-serif"
+            className="w-full max-w-2xl parchment-sheet rounded-xl p-6 lg:p-8 text-xs leading-relaxed text-zinc-800 dark:text-zinc-200 select-text prose dark:prose-invert max-w-none font-serif"
             dangerouslySetInnerHTML={{
               __html: document.htmlContent || `<pre>${document.extractedText || ""}</pre>`,
             }}
