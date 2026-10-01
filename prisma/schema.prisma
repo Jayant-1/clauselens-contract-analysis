@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Document {
+  id             String         @id @default(cuid())
+  name           String
+  fileType       String         // "pdf" | "docx"
+  fileSize       Int
+  filePath       String
+  pageCount      Int            @default(1)
+  totalChars     Int            @default(0)
+  status         String         @default("ready") // "processing" | "ready" | "error"
+  errorMessage   String?
+  extractedText  String
+  normalizedText String
+  htmlContent    String?        // Rich HTML preview for DOCX
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  chunks         Chunk[]
+  pages          DocumentPage[]
+}
+
+model DocumentPage {
+  id             String   @id @default(cuid())
+  documentId     String
+  pageNumber     Int
+  text           String
+  normalizedText String
+  document       Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId, pageNumber])
+}
+
+model Chunk {
+  id                String   @id @default(cuid())
+  documentId        String
+  chunkIndex        Int
+  pageNumber        Int
+  sectionTitle      String
+  content           String
+  normalizedContent String
+  startChar         Int      @default(0)
+  endChar           Int      @default(0)
+  document          Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+}
+
+model ChatSession {
+  id          String        @id @default(cuid())
+  title       String        @default("Contract Analysis")
+  documentIds String        // JSON array of doc IDs
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  messages    ChatMessage[]
+}
+
+model ChatMessage {
+  id            String      @id @default(cuid())
+  sessionId     String
+  role          String      // "user" | "assistant" | "system"
+  content       String
+  citations     String?     // JSON array of VerifiedCitation objects
+  researchSteps String?     // JSON array of AgentStep objects
+  createdAt     DateTime    @default(now())
+  session       ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+}
+
+model ComparisonRecord {
+  id          String   @id @default(cuid())
+  docAId      String
+  docBId      String
+  docAName    String
+  docBName    String
+  summary     String
+  differences String   // JSON array of differences
+  createdAt   DateTime @default(now())
+
+  @@index([docAId, docBId])
+}
