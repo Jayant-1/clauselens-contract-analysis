@@ -1,5 +1,11 @@
 # ClauseLens — Engineering Submission Note
 
+- **Candidate**: Jayant Potdar
+- **Live Production URL**: [https://clauselens-contract-analysis.vercel.app](https://clauselens-contract-analysis.vercel.app)
+- **GitHub Repository**: [https://github.com/Jayant-1/clauselens-contract-analysis](https://github.com/Jayant-1/clauselens-contract-analysis)
+- **Walkthrough Video**: [https://clauselens-contract-analysis.vercel.app/demo/clauselens-demo-walkthrough.webm](https://clauselens-contract-analysis.vercel.app/demo/clauselens-demo-walkthrough.webm)
+- **Submission Target**: suryashish1@elcara.io
+
 ### 1. Quote Verification and Failure Modes
 ClauseLens treats quote verification as a non-negotiable security and grounding guarantee. In legal diligence, citing the wrong clause or returning a syntactically valid quote from an unrelated provision (e.g., citing a 30-day termination notice when asked for a liability cap) is as catastrophic as outright hallucination.
 

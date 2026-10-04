@@ -1,5 +1,13 @@
 # ClauseLens — Verified Legal Contract Analysis
 
+[![Live App](https://img.shields.io/badge/Live_App-clauselens--contract--analysis.vercel.app-blue?style=for-the-badge&logo=vercel)](https://clauselens-contract-analysis.vercel.app)
+[![GitHub Repository](https://img.shields.io/badge/GitHub-Jayant--1%2Fclauselens--contract--analysis-181717?style=for-the-badge&logo=github)](https://github.com/Jayant-1/clauselens-contract-analysis)
+[![Walkthrough Video](https://img.shields.io/badge/Demo_Video-Walkthrough_WebM-green?style=for-the-badge&logo=googlechrome)](https://clauselens-contract-analysis.vercel.app/demo/clauselens-demo-walkthrough.webm)
+
+- **Live Production URL**: [https://clauselens-contract-analysis.vercel.app](https://clauselens-contract-analysis.vercel.app)
+- **GitHub Repository**: [https://github.com/Jayant-1/clauselens-contract-analysis](https://github.com/Jayant-1/clauselens-contract-analysis)
+- **Demo Video Walkthrough**: [Watch Walkthrough (public/demo/clauselens-demo-walkthrough.webm)](https://clauselens-contract-analysis.vercel.app/demo/clauselens-demo-walkthrough.webm)
+
 ClauseLens is a production-grade, evidence-grounded legal contract analysis web application. Built for enterprise legal workflows, ClauseLens allows attorneys, procurement specialists, and contract reviewers to upload complex legal contracts (PDF and DOCX), query them in real time, inspect independently verified citations, visually track clauses in a synchronized document viewer, and run side-by-side contract version comparisons.
 
 ---
