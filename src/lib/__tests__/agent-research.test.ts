@@ -122,6 +122,33 @@ describe("Agentic Document Research (Part C - Option 2)", () => {
       expect(response.isGrounded).toBe(true);
     });
 
+    it("ensures get_section consumes highest-confidence search result and displays true section, document, and page", async () => {
+      const activityEvents: ResearchStep[] = [];
+      const response = await runAgenticResearch(
+        "What is the liability cap? Quote the exact contractual wording.",
+        [sampleDoc1],
+        { onStep: (step) => activityEvents.push(step) }
+      );
+
+      // Verify get_section step
+      const getSectionStep = response.steps.find((s) => s.tool === "get_section");
+      expect(getSectionStep).toBeDefined();
+
+      // Must NOT be 'General Provisions'
+      expect(getSectionStep!.message).not.toContain("General Provisions");
+      // Must contain true section title, source document name, and page number
+      expect(getSectionStep!.message).toContain("Limitation of Liability");
+      expect(getSectionStep!.message).toContain(sampleDoc1.name);
+      expect(getSectionStep!.message).toContain("Page 1");
+
+      // Verify all steps correspond to real executed tool results
+      for (const step of response.steps) {
+        expect(step.output).toBeDefined();
+        expect(typeof step.output).toBe("string");
+        expect(step.status).toBe("completed");
+      }
+    });
+
     it("returns 'I could not find a supported answer in the selected document(s)' when query has no matching evidence", async () => {
       const response = await runAgenticResearch(
         "What are the spacecraft orbital reentry orbital velocity requirements?",

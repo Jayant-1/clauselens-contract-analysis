@@ -397,44 +397,76 @@ async function runDeterministicAgent(
   step1.status = "completed";
   callbacks.onStep?.(step1);
 
-  // Round 2: Read section details
+  // Consume highest-confidence relevant result from search
+  const rawResults = (searchResult.rawResult as Array<{
+    chunkId: string;
+    documentId: string;
+    documentName: string;
+    pageNumber: number;
+    sectionTitle: string;
+    content: string;
+    relevanceScore: number;
+  }>) || [];
+
+  const topMatch = rawResults.length > 0 ? rawResults[0] : null;
+  const targetDocId = topMatch?.documentId || docs[0]?.id || "";
+  const targetSectionId = topMatch?.chunkId || topMatch?.sectionTitle || docs[0]?.chunks[0]?.id || "Section 1";
+
+  // Round 2: Read section details using the highest-confidence relevant result
   const step2Id = `step_round_2_${Date.now()}`;
   const step2: ResearchStep = {
     id: step2Id,
     round: round++,
     tool: "get_section",
-    message: `Reading section details across ${docs.length} document(s)...`,
+    message: topMatch
+      ? `Reading section "${topMatch.sectionTitle}" in ${topMatch.documentName} (Page ${topMatch.pageNumber})...`
+      : `Reading section details across ${docs.length} document(s)...`,
+    input: { documentId: targetDocId, sectionId: targetSectionId },
     status: "running",
     timestamp: Date.now(),
   };
   steps.push(step2);
   callbacks.onStep?.(step2);
 
-  const topSectionName = docs[0]?.chunks[0]?.sectionTitle || "Section 1";
   const sectionResult = executeTool(
     "get_section",
-    { documentId: docs[0]?.id || "", sectionId: topSectionName },
+    { documentId: targetDocId, sectionId: targetSectionId },
     docs
   );
   step2.message = sectionResult.activityMessage;
   step2.output = sectionResult.output;
-  step2.status = "completed";
+  step2.status = sectionResult.success ? "completed" : "error";
   callbacks.onStep?.(step2);
 
-  // Round 3: If multi-doc, record comparison step
+  // Round 3: If multi-doc, execute real get_section for the second document's highest-confidence match
   if (docs.length > 1) {
+    const secondDocMatch = rawResults.find((r) => r.documentId !== targetDocId);
+    const doc2Id = secondDocMatch?.documentId || docs[1]?.id || "";
+    const doc2SectionId = secondDocMatch?.chunkId || secondDocMatch?.sectionTitle || docs[1]?.chunks[0]?.id || "Section 1";
+
     const step3Id = `step_round_3_${Date.now()}`;
     const step3: ResearchStep = {
       id: step3Id,
       round: round++,
-      tool: "search_document",
-      message: `Comparing clauses across ${docs.length} documents...`,
+      tool: "get_section",
+      message: secondDocMatch
+        ? `Reading section "${secondDocMatch.sectionTitle}" in ${secondDocMatch.documentName} (Page ${secondDocMatch.pageNumber})...`
+        : `Reading section details in ${docs[1]?.name || "second document"}...`,
+      input: { documentId: doc2Id, sectionId: doc2SectionId },
       status: "running",
       timestamp: Date.now(),
     };
     steps.push(step3);
     callbacks.onStep?.(step3);
-    step3.status = "completed";
+
+    const step3Result = executeTool(
+      "get_section",
+      { documentId: doc2Id, sectionId: doc2SectionId },
+      docs
+    );
+    step3.message = step3Result.activityMessage;
+    step3.output = step3Result.output;
+    step3.status = step3Result.success ? "completed" : "error";
     callbacks.onStep?.(step3);
   }
 

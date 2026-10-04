@@ -28,7 +28,7 @@ This document provides a comprehensive audit of each requirement specified in th
 | **7** | **Document Comparison** | **Complete** | - Clause-level comparison engine (`src/lib/comparison.ts` `compareContracts`).<br>- Detects Added, Removed, and Modified clauses.<br>- Material value extraction: liability caps, termination notice periods, governing law states (`src/lib/comparison.ts` `extractMaterialValues`).<br>- Significance assignment (**High**, **Medium**, **Low**) with dual filtering and sorting controls (`src/components/ComparisonView.tsx`).<br>- Executive plain-language substantive changes summary.<br>- Direct navigation buttons from each diff to source document pages.<br>- Tested with real contract fixtures (`src/lib/__tests__/comparison.test.ts` and `src/lib/__tests__/acceptance.test.ts`). |
 | **8** | **Part C: Option 2 (Agentic Research)** | **Complete** | - Multi-round tool execution loop (up to 6 rounds) in `src/lib/agent/researcher.ts`.<br>- Three tools: `search_document`, `get_section`, `list_clauses` (`src/lib/agent/tools.ts`).<br>- Strict Zod schema validation (`StructuredAnswerSchema`, `SearchDocumentSchema`, `GetSectionSchema`, `ListClausesSchema`).<br>- High-confidence deterministic fallback agent when AI API key is unconfigured.<br>- Safe error recovery for malformed or unknown tool calls without crashing.<br>- Development-mode tool call logging without leaking secrets.<br>- Final answer built strictly from retrieved tool output.<br>- All citations routed through independent quote verification pipeline.<br>- Tested in `src/lib/__tests__/agent-research.test.ts` and `src/lib/__tests__/acceptance.test.ts`. |
 | **9** | **Readme & Submission Materials** | **Complete** | - Detailed `README.md` with architecture diagrams, pnpm setup, deployment, demo script, and limitations.<br>- Comprehensive `SUBMISSION_NOTE.md` reflecting on technical tradeoffs, quote verification, section boundaries, and next steps.<br>- `.env.example` template with clean variable definitions.<br>- Realistic test fixtures in `fixtures/contracts/` (`saas_agreement_v1.docx`, `saas_agreement_v2.docx`, `sample_contract.pdf`, `scanned_sample.pdf`). |
-| **10**| **Code Quality & Validation** | **Complete** | - TypeScript strict mode: 0 type errors (`pnpm exec tsc --noEmit`).<br>- ESLint passing with 0 errors (`pnpm run lint`).<br>- 100% test pass rate across 63 tests in 11 test suites (`pnpm test`).<br>- Production build passing cleanly (`pnpm build`). |
+| **10**| **Code Quality & Validation** | **Complete** | - TypeScript strict mode: 0 type errors (`pnpm exec tsc --noEmit`).<br>- ESLint passing with 0 errors (`pnpm run lint`).<br>- 100% test pass rate across 64 tests in 11 test suites (`pnpm test`).<br>- Production build passing cleanly (`pnpm build`). |
 
 ---
 
@@ -42,14 +42,14 @@ This document provides a comprehensive audit of each requirement specified in th
  ✓ src/lib/__tests__/risk-engine.test.ts        (5 tests)
  ✓ src/lib/__tests__/comparison.test.ts         (3 tests)
  ✓ src/lib/__tests__/document-parser.test.ts    (4 tests)
- ✓ src/lib/__tests__/agent-research.test.ts     (8 tests)
+ ✓ src/lib/__tests__/agent-research.test.ts     (9 tests)
  ✓ src/lib/__tests__/acceptance.test.ts         (15 tests)
  ✓ src/lib/__tests__/interactive-tour.test.ts   (3 tests)
  ✓ src/lib/__tests__/e2e-api.test.ts            (9 tests)
 
 Test Files  11 passed (11)
-     Tests  63 passed (63)
+     Tests  64 passed (64)
   Duration  1.71s
 ```
 
-All 63 automated unit, acceptance, and end-to-end tests pass cleanly.
+All 64 automated unit, acceptance, and end-to-end tests pass cleanly.

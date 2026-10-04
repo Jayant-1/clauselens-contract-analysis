@@ -239,7 +239,7 @@ export function executeTool(
         return {
           toolName,
           success: true,
-          activityMessage: `Reading "${directChunk.sectionTitle}" on Page ${directChunk.pageNumber}...`,
+          activityMessage: `Reading section "${directChunk.sectionTitle}" in ${doc.name} (Page ${directChunk.pageNumber})...`,
           output: JSON.stringify({
             documentId: doc.id,
             documentName: doc.name,
@@ -260,7 +260,7 @@ export function executeTool(
         return {
           toolName,
           success: true,
-          activityMessage: `Reading section "${matchingChunks[0].sectionTitle}"...`,
+          activityMessage: `Reading section "${matchingChunks[0].sectionTitle}" in ${doc.name} (Page ${matchingChunks[0].pageNumber})...`,
           output: JSON.stringify({
             documentId: doc.id,
             documentName: doc.name,
@@ -281,7 +281,7 @@ export function executeTool(
             return {
               toolName,
               success: true,
-              activityMessage: `Reading section "${line.trim()}"...`,
+              activityMessage: `Reading section "${line.trim()}" in ${doc.name} (Page ${page.pageNumber})...`,
               output: JSON.stringify({
                 documentId: doc.id,
                 documentName: doc.name,
