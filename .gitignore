@@ -49,11 +49,5 @@ next-env.d.ts
 # local uploads
 /uploads
 
-# impeccable local overrides & cache
-.impeccable/config.local.json
-.impeccable/*.cache.json
-
-# python cache & test artifacts
-__pycache__/
-*.pyc
+# test artifacts
 .playwright-mcp/
