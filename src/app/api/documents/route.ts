@@ -3,13 +3,14 @@ import db from "@/lib/db";
 import { storage } from "@/lib/storage";
 import { parseDocument, validateFileFormat } from "@/lib/document-parser";
 import { chunkDocument } from "@/lib/chunking";
+import { seedDefaultContractsIfEmpty } from "@/lib/seed-helpers";
 
 export const dynamic = "force-dynamic";
 
 // GET /api/documents: list all uploaded documents
 export async function GET() {
   try {
-    const documents = await db.document.findMany({
+    let documents = await db.document.findMany({
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -28,6 +29,29 @@ export async function GET() {
         },
       },
     });
+
+    if (documents.length === 0) {
+      await seedDefaultContractsIfEmpty();
+      documents = await db.document.findMany({
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          name: true,
+          fileType: true,
+          fileSize: true,
+          filePath: true,
+          pageCount: true,
+          totalChars: true,
+          status: true,
+          errorMessage: true,
+          createdAt: true,
+          updatedAt: true,
+          _count: {
+            select: { chunks: true },
+          },
+        },
+      });
+    }
 
     return NextResponse.json({ success: true, documents });
   } catch (error) {

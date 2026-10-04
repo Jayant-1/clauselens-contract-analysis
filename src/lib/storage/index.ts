@@ -12,7 +12,13 @@ export class LocalStorageProvider implements StorageProvider {
   private baseDir: string;
 
   constructor(baseDir?: string) {
-    this.baseDir = baseDir || path.join(process.cwd(), "uploads");
+    if (baseDir) {
+      this.baseDir = baseDir;
+    } else if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+      this.baseDir = path.join("/tmp", "uploads");
+    } else {
+      this.baseDir = path.join(process.cwd(), "uploads");
+    }
   }
 
   private async ensureDir(): Promise<void> {
