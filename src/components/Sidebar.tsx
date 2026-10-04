@@ -7,14 +7,15 @@ import {
   Trash2,
   CheckSquare,
   Square,
-  Scale,
   GitCompare,
   AlertCircle,
   Loader2,
   X,
   FolderOpen,
+  PanelLeftClose,
 } from "lucide-react";
 import { DocumentSummary } from "@/types";
+import { UntitledUiLogo } from "@/components/UntitledUiLogo";
 
 interface SidebarProps {
   documents: DocumentSummary[];
@@ -28,6 +29,7 @@ interface SidebarProps {
   onUploadSuccess: () => Promise<void>;
   onOpenCompareModal: () => void;
   onCloseMobile?: () => void;
+  onToggleCollapse?: () => void;
 }
 
 export function Sidebar({
@@ -42,6 +44,7 @@ export function Sidebar({
   onUploadSuccess,
   onOpenCompareModal,
   onCloseMobile,
+  onToggleCollapse,
 }: SidebarProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -129,45 +132,52 @@ export function Sidebar({
   };
 
   return (
-    <aside className="w-full flex flex-col h-full select-none bg-white dark:bg-[#0F1116] overflow-hidden">
+    <aside className="w-full flex flex-col h-full select-none bg-white overflow-hidden text-zinc-900 font-sans">
       {/* Dossier Header */}
-      <div className="px-4 py-3 border-b border-[#E6E2D9] dark:border-[#222530] flex items-center justify-between bg-zinc-50/50 dark:bg-[#12141C]/50 shrink-0">
+      <div className="px-4 py-3.5 border-b border-[#E5E5E2] flex items-center justify-between bg-white shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-[#16171B] dark:bg-[#F2F1EE] flex items-center justify-center text-[#C5A880] dark:text-[#8F6E3B] shadow-2xs">
+          <div className="w-7 h-7 rounded-lg bg-[#1E3A8A]/10 text-[#1E3A8A] flex items-center justify-center">
             <FolderOpen className="w-4 h-4" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h1 className="font-semibold text-zinc-900 dark:text-zinc-100 text-xs tracking-wider uppercase font-mono">
-                Matter Dossier
-              </h1>
-              <span className="text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-[#C5A880]/15 text-[#8F6E3B] dark:text-[#D8BE96] font-bold">
+              <h2 className="font-editorial text-sm font-semibold text-zinc-900">
+                Agreements
+              </h2>
+              <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-zinc-100 text-zinc-600 font-medium">
                 {documents.length}
               </span>
             </div>
-            <p className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 mt-0.5">
-              Indexed Evidence Base
-            </p>
           </div>
         </div>
 
         <div className="flex items-center gap-1">
-          {documents.length >= 2 && (
+          {onCloseMobile && documents.length >= 2 && (
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={onOpenCompareModal}
               title="Compare two contract versions"
-              className="lg:hidden flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-[#14161B] hover:border-[#C5A880]/50 border border-[#E6E2D9] dark:border-[#242730] rounded-md transition-colors shadow-2xs"
+              className="flex items-center gap-1 px-2 py-1 text-[11px] font-medium text-zinc-700 bg-white hover:border-[#1E3A8A] border border-[#E5E5E2] rounded-md transition-colors shadow-xs"
             >
-              <GitCompare className="w-3 h-3 text-[#C5A880]" />
+              <GitCompare className="w-3 h-3 text-[#1E3A8A]" />
               <span>Compare</span>
             </motion.button>
+          )}
+
+          {onToggleCollapse && (
+            <button
+              onClick={onToggleCollapse}
+              className="p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-[#F4F4F0] rounded-md transition-colors"
+              title="Collapse sidebar (Ctrl+B)"
+            >
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
           )}
 
           {onCloseMobile && (
             <button
               onClick={onCloseMobile}
-              className="lg:hidden p-1.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-md"
+              className="p-1.5 text-zinc-400 hover:text-zinc-700 rounded-md"
               title="Close drawer"
             >
               <X className="w-4 h-4" />
@@ -176,61 +186,59 @@ export function Sidebar({
         </div>
       </div>
 
-      {/* Intake Deposit Compartment (Upload) */}
+      {/* Intake Upload Section */}
       <div className="p-3 shrink-0">
-        <div className="p-1 rounded-xl bg-gradient-to-b from-[#C5A880]/15 via-zinc-100/50 to-transparent dark:from-[#C5A880]/10 dark:via-[#161822] dark:to-transparent border border-[#C5A880]/20">
-          <motion.div
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleDrop}
-            onClick={() => !isUploading && fileInputRef.current?.click()}
-            className={`rounded-lg p-3 text-center cursor-pointer transition-all ${
-              isUploading
-                ? "border border-[#C5A880] bg-[#C5A880]/10"
-                : "border border-dashed border-[#D5CFC4] dark:border-[#2C303B] hover:border-[#C5A880] bg-white dark:bg-[#12141A] shadow-2xs"
-            }`}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              onChange={handleFileChange}
-              className="hidden"
-            />
+        <motion.div
+          whileHover={{ scale: 1.005 }}
+          whileTap={{ scale: 0.995 }}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+          onClick={() => !isUploading && fileInputRef.current?.click()}
+          className={`rounded-xl p-3.5 text-center cursor-pointer transition-all ${
+            isUploading
+              ? "border border-[#1E3A8A] bg-[#1E3A8A]/5"
+              : "border border-dashed border-[#D4D4D0] hover:border-[#1E3A8A] bg-[#FAFAF8] hover:bg-white"
+          }`}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            onChange={handleFileChange}
+            className="hidden"
+          />
 
-            {isUploading ? (
-              <div className="space-y-2 py-1">
-                <div className="flex items-center justify-center gap-1.5 text-xs font-mono text-[#8F6E3B] dark:text-[#D8BE96]">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>{uploadStatusText}</span>
-                </div>
-                <div className="w-full bg-[#E6E2D9] dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
-                  <motion.div
-                    className="bg-[#C5A880] h-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${uploadProgress}%` }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
+          {isUploading ? (
+            <div className="space-y-2 py-1">
+              <div className="flex items-center justify-center gap-1.5 text-xs font-mono text-[#1E3A8A] font-semibold">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>{uploadStatusText}</span>
               </div>
-            ) : (
-              <div className="flex items-center justify-center gap-2.5 text-zinc-600 dark:text-zinc-400 py-0.5">
-                <div className="w-7 h-7 rounded-lg bg-[#FAF8F5] dark:bg-zinc-800 flex items-center justify-center text-[#8F6E3B] dark:text-[#D8BE96] shrink-0 border border-[#E6E2D9] dark:border-zinc-700">
-                  <UploadCloud className="w-4 h-4" />
-                </div>
-                <div className="text-left">
-                  <p className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 font-sans">
-                    Intake Contract Matter
-                  </p>
-                  <p className="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">
-                    PDF or DOCX (150+ pages)
-                  </p>
-                </div>
+              <div className="w-full bg-zinc-200 h-1.5 rounded-full overflow-hidden">
+                <motion.div
+                  className="bg-[#1E3A8A] h-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${uploadProgress}%` }}
+                  transition={{ duration: 0.3 }}
+                />
               </div>
-            )}
-          </motion.div>
-        </div>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-2.5 text-zinc-600 py-0.5">
+              <div className="w-7 h-7 rounded-lg bg-white border border-[#E5E5E2] flex items-center justify-center text-[#1E3A8A] shrink-0 shadow-2xs">
+                <UploadCloud className="w-4 h-4" />
+              </div>
+              <div className="text-left">
+                <p className="text-xs font-medium text-zinc-900 font-sans">
+                  Upload Contract
+                </p>
+                <p className="text-[10px] text-zinc-400 font-mono">
+                  PDF or DOCX (up to 200 pages)
+                </p>
+              </div>
+            </div>
+          )}
+        </motion.div>
 
         {/* Error notification banner */}
         <AnimatePresence>
@@ -239,13 +247,13 @@ export function Sidebar({
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
-              className="mt-2 p-2.5 bg-[#FDF0F0] dark:bg-red-950/30 border border-[#A82E2E]/20 rounded-md text-[#A82E2E] dark:text-red-300 text-xs flex items-start gap-2"
+              className="mt-2 p-2.5 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs flex items-start gap-2"
             >
-              <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+              <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-red-600" />
               <div className="flex-1 leading-relaxed text-[11px]">{errorMessage}</div>
               <button
                 onClick={() => setErrorMessage(null)}
-                className="text-[#A82E2E]/70 hover:text-[#A82E2E] font-bold text-xs"
+                className="text-red-500 hover:text-red-700 font-bold text-xs"
               >
                 ×
               </button>
@@ -255,20 +263,20 @@ export function Sidebar({
       </div>
 
       {/* Library Selection Controls */}
-      <div className="px-4 py-1.5 flex items-center justify-between text-[10px] font-mono text-zinc-400 dark:text-zinc-500 border-b border-[#E6E2D9]/70 dark:border-[#222530] shrink-0">
-        <span className="tracking-wider uppercase font-semibold">AGREEMENTS ({documents.length})</span>
+      <div className="px-4 py-2 flex items-center justify-between text-[11px] text-zinc-500 border-b border-[#E5E5E2] bg-[#FAFAF8] shrink-0">
+        <span className="font-medium text-zinc-600">PORTFOLIO ({documents.length})</span>
         {documents.length > 1 && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-xs">
             <button
               onClick={onSelectAllDocs}
-              className="hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
+              className="hover:text-[#1E3A8A] transition-colors"
             >
               All
             </button>
-            <span>•</span>
+            <span className="text-zinc-300">•</span>
             <button
               onClick={onDeselectAllDocs}
-              className="hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
+              className="hover:text-[#1E3A8A] transition-colors"
             >
               Clear
             </button>
@@ -280,28 +288,29 @@ export function Sidebar({
       <div className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin">
         {documents.length === 0 ? (
           <div className="h-44 flex flex-col items-center justify-center text-center p-4">
-            <Scale className="w-6 h-6 text-zinc-300 dark:text-zinc-700 mb-2" />
-            <p className="text-xs font-serif text-zinc-600 dark:text-zinc-400 font-medium">
+            <UntitledUiLogo className="w-8 h-8 opacity-60 mb-2 grayscale" size={32} />
+            <p className="text-xs font-medium text-zinc-700">
               No contracts loaded
             </p>
-            <p className="text-[10px] text-zinc-400 dark:text-zinc-500 mt-1 max-w-[180px]">
+            <p className="text-[11px] text-zinc-400 mt-1 max-w-[180px]">
               Drop contract PDF or DOCX files above to index clauses.
             </p>
           </div>
         ) : (
-          documents.map((doc) => {
+          documents.map((doc, idx) => {
             const isSelected = selectedDocIds.includes(doc.id);
             const isActiveViewer = activeViewerDocId === doc.id;
 
             return (
               <motion.div
                 key={doc.id}
+                data-tour={idx === 0 ? "contract-item" : undefined}
                 whileHover={{ y: -1 }}
                 onClick={() => onOpenDocInViewer(doc.id)}
-                className={`group relative rounded-xl p-2.5 cursor-pointer transition-all border ${
+                className={`group relative rounded-xl p-3 cursor-pointer transition-all border ${
                   isActiveViewer
-                    ? "bg-[#FAF8F4] dark:bg-[#161822] border-[#C5A880] dark:border-[#C5A880]/80 shadow-2xs"
-                    : "bg-white dark:bg-[#12141A] border-[#E6E2D9] dark:border-[#222530] hover:border-[#C5A880]/50"
+                    ? "bg-[#1E3A8A]/5 border-[#1E3A8A] shadow-xs"
+                    : "bg-white border-[#E5E5E2] hover:border-zinc-300 hover:bg-[#FAFAF8]"
                 }`}
               >
                 <div className="flex items-start gap-2.5">
@@ -313,42 +322,36 @@ export function Sidebar({
                       onToggleSelectDoc(doc.id);
                     }}
                     title={isSelected ? "Deselect for inquiry" : "Select for inquiry"}
-                    className="mt-0.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 shrink-0"
+                    className="mt-0.5 text-zinc-400 hover:text-zinc-900 shrink-0"
                   >
                     {isSelected ? (
-                      <CheckSquare className="w-4 h-4 text-[#8F6E3B] dark:text-[#D8BE96]" />
+                      <CheckSquare className="w-4 h-4 text-[#1E3A8A]" />
                     ) : (
-                      <Square className="w-4 h-4 text-zinc-300 dark:text-zinc-700" />
+                      <Square className="w-4 h-4 text-zinc-300 hover:text-zinc-500" />
                     )}
                   </button>
 
                   {/* Doc details */}
                   <div className="flex-1 min-w-0">
                     <p
-                      className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate font-sans"
+                      className="text-xs font-medium text-zinc-900 truncate font-sans"
                       title={doc.name}
                     >
                       {doc.name}
                     </p>
 
-                    <div className="flex items-center gap-1.5 mt-1 font-mono text-[9px]">
-                      <span
-                        className={`px-1.5 py-0.2 rounded font-bold ${
-                          doc.fileType === "pdf"
-                            ? "bg-[#FDF0F0] text-[#A82E2E] dark:bg-red-950/40 dark:text-red-300"
-                            : "bg-[#EBF5FA] text-[#1F6C9F] dark:bg-blue-950/40 dark:text-blue-300"
-                        }`}
-                      >
-                        {doc.fileType.toUpperCase()}
+                    <div className="flex items-center gap-1.5 mt-1 font-mono text-[10px]">
+                      <span className="px-1.5 py-0.2 rounded font-medium bg-zinc-100 text-zinc-600 border border-zinc-200 uppercase">
+                        {doc.fileType}
                       </span>
 
-                      <span className="text-zinc-400 dark:text-zinc-500">
-                        {doc.pageCount} {doc.pageCount === 1 ? "page" : "pages"}
+                      <span className="text-zinc-500">
+                        {doc.pageCount} {doc.pageCount === 1 ? "pg" : "pgs"}
                       </span>
 
-                      <span className="text-zinc-300 dark:text-zinc-700">•</span>
+                      <span className="text-zinc-300">•</span>
 
-                      <span className="text-zinc-400 dark:text-zinc-500">
+                      <span className="text-zinc-400">
                         {formatFileSize(doc.fileSize)}
                       </span>
                     </div>
@@ -362,7 +365,7 @@ export function Sidebar({
                       setDocToDelete({ id: doc.id, name: doc.name });
                     }}
                     title="Delete contract and chat history"
-                    className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-[#A82E2E] p-1 transition-opacity shrink-0"
+                    className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-600 p-1 transition-opacity shrink-0"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -374,18 +377,20 @@ export function Sidebar({
       </div>
 
       {/* Selected Scope Footer */}
-      <div className="p-3 border-t border-[#E6E2D9] dark:border-[#222530] bg-zinc-50/50 dark:bg-[#12141C]/50 shrink-0">
-        <div className="flex items-center justify-between text-[10px] text-zinc-600 dark:text-zinc-400 font-mono">
+      <div className="p-3 border-t border-[#E5E5E2] bg-[#FAFAF8] shrink-0">
+        <div className="flex items-center justify-between text-xs text-zinc-600">
           <span className="flex items-center gap-1.5">
             <span
               className={`w-2 h-2 rounded-full ${
-                selectedDocIds.length > 0 ? "bg-emerald-500 animate-pulse" : "bg-zinc-300 dark:bg-zinc-700"
+                selectedDocIds.length > 0 ? "bg-emerald-500" : "bg-zinc-300"
               }`}
             />
-            <span>{selectedDocIds.length} in inquiry scope</span>
+            <span className="font-medium text-[11px]">
+              {selectedDocIds.length} {selectedDocIds.length === 1 ? "matter" : "matters"} in scope
+            </span>
           </span>
-          <span className="text-[9px] text-[#8F6E3B] dark:text-[#D8BE96] font-semibold">
-            STRICT GROUNDING
+          <span className="text-[10px] text-zinc-400 font-mono">
+            {documents.length} loaded
           </span>
         </div>
       </div>
@@ -393,26 +398,26 @@ export function Sidebar({
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {docToDelete && (
-          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-white dark:bg-[#14161B] border border-[#E6E2D9] dark:border-[#242730] rounded-xl p-5 max-w-sm w-full shadow-lg"
+              className="bg-white border border-slate-200 rounded-2xl p-5 max-w-sm w-full shadow-xl"
             >
-              <div className="flex items-center gap-2.5 text-[#A82E2E] mb-3">
+              <div className="flex items-center gap-2.5 text-red-600 mb-3">
                 <Trash2 className="w-4 h-4 shrink-0" />
-                <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm font-serif">
+                <h3 className="font-semibold text-slate-900 text-sm font-grotesk">
                   Delete Contract
                 </h3>
               </div>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
+              <p className="text-xs text-slate-600 leading-relaxed mb-4">
                 Permanently remove <strong>&ldquo;{docToDelete.name}&rdquo;</strong> and all associated chunks and chat history?
               </p>
               <div className="flex items-center justify-end gap-2">
                 <button
                   onClick={() => setDocToDelete(null)}
-                  className="px-3 py-1.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md transition-colors"
+                  className="px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors"
                 >
                   Cancel
                 </button>
@@ -423,7 +428,7 @@ export function Sidebar({
                     setDocToDelete(null);
                     if (target) await onDeleteDoc(target.id, target.name);
                   }}
-                  className="px-3 py-1.5 text-xs font-medium text-white bg-[#A82E2E] hover:bg-[#8F2626] rounded-md transition-colors shadow-2xs"
+                  className="px-3.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors shadow-xs font-grotesk"
                 >
                   Delete
                 </motion.button>

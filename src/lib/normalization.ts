@@ -26,11 +26,29 @@ export interface VerificationResult {
   confidence: number;
 }
 
+export interface DocumentChunkRef {
+  id: string;
+  sectionTitle: string;
+  content: string;
+  pageNumber: number;
+}
+
 export interface DocumentVerificationTarget {
   id: string;
   name: string;
   extractedText: string;
   pages: PageText[];
+  chunks?: DocumentChunkRef[];
+}
+
+export interface VerifyQuoteOptions {
+  preferredPage?: number;
+  preferredStartOffset?: number;
+  preferredEndOffset?: number;
+  claimedDocumentId?: string;
+  claimedSectionTitle?: string;
+  claimedChunkId?: string;
+  chunks?: DocumentChunkRef[];
 }
 
 /**
@@ -124,16 +142,12 @@ export function findPageForMatch(
 }
 
 /**
- * Verifies a quote against a document.
+ * Verifies a quote against a document with chunk/section boundary validation
  */
 export function verifyQuote(
   rawQuote: string,
   document: DocumentVerificationTarget,
-  options?: {
-    preferredPage?: number;
-    preferredStartOffset?: number;
-    preferredEndOffset?: number;
-  }
+  options?: VerifyQuoteOptions
 ): VerificationResult {
   const cleanQuote = rawQuote ? rawQuote.trim() : "";
   if (!cleanQuote || cleanQuote.length < 3) {
@@ -146,6 +160,21 @@ export function verifyQuote(
       occurrencesCount: 0,
       matches: [],
       reason: "Quote is empty or too short to verify.",
+      confidence: 0,
+    };
+  }
+
+  // 1. Validate claimed document ID if provided
+  if (options?.claimedDocumentId && options.claimedDocumentId !== document.id) {
+    return {
+      isVerified: false,
+      matchedText: null,
+      pageNumber: null,
+      startOffset: null,
+      endOffset: null,
+      occurrencesCount: 0,
+      matches: [],
+      reason: `Document ID mismatch: citation claimed document "${options.claimedDocumentId}", but target document is "${document.id}".`,
       confidence: 0,
     };
   }
@@ -232,6 +261,7 @@ export function verifyQuote(
     }
   }
 
+  // If quote is not found anywhere in document
   if (occurrences.length === 0) {
     return {
       isVerified: false,
@@ -246,7 +276,66 @@ export function verifyQuote(
     };
   }
 
-  // Disambiguation
+  // Pass 4: Chunk and Section boundary verification
+  const availableChunks = options?.chunks || document.chunks || [];
+  if (availableChunks.length > 0) {
+    // 4a. If specific chunk ID was claimed, verify quote is within that chunk
+    if (options?.claimedChunkId) {
+      const targetChunk = availableChunks.find((c) => c.id === options.claimedChunkId);
+      if (targetChunk) {
+        const normChunk = normalizeText(targetChunk.content);
+        if (!normChunk.includes(normQuote)) {
+          return {
+            isVerified: false,
+            matchedText: null,
+            pageNumber: null,
+            startOffset: null,
+            endOffset: null,
+            occurrencesCount: occurrences.length,
+            matches: occurrences,
+            reason: `Quote is outside claimed chunk "${options.claimedChunkId}" (${targetChunk.sectionTitle}).`,
+            confidence: 0,
+          };
+        }
+      }
+    }
+
+    // 4b. If specific section title was claimed, verify quote belongs to that section
+    if (options?.claimedSectionTitle) {
+      const normClaimedSection = normalizeText(options.claimedSectionTitle);
+      const matchingSectionChunks = availableChunks.filter((c) => {
+        const normSec = normalizeText(c.sectionTitle);
+        return normSec.includes(normClaimedSection) || normClaimedSection.includes(normSec);
+      });
+
+      if (matchingSectionChunks.length > 0) {
+        const sectionHasQuote = matchingSectionChunks.some((c) =>
+          normalizeText(c.content).includes(normQuote)
+        );
+
+        if (!sectionHasQuote) {
+          // Find which section actually contains this quote for clear error
+          const actualChunk = availableChunks.find((c) =>
+            normalizeText(c.content).includes(normQuote)
+          );
+          const actualSec = actualChunk ? actualChunk.sectionTitle : "another section";
+          return {
+            isVerified: false,
+            matchedText: null,
+            pageNumber: null,
+            startOffset: null,
+            endOffset: null,
+            occurrencesCount: occurrences.length,
+            matches: occurrences,
+            reason: `Quote is outside claimed section "${options.claimedSectionTitle}" (actual location: "${actualSec}").`,
+            confidence: 0,
+          };
+        }
+      }
+    }
+  }
+
+  // Disambiguation for repeated quotes
   let selectedMatch = occurrences[0];
   if (options?.preferredPage) {
     const pageMatch = occurrences.find((m) => m.pageNumber === options.preferredPage);

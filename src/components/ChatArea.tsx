@@ -6,7 +6,6 @@ import {
   Send,
   Square,
   Sparkles,
-  Check,
   ArrowUpRight,
   ChevronDown,
   ChevronRight,
@@ -14,7 +13,6 @@ import {
   BookOpen,
   Layers,
   Copy,
-  CheckCheck,
   ShieldCheck,
   Scale,
   Landmark,
@@ -23,8 +21,6 @@ import {
   Lock,
   FileText,
   Compass,
-  Award,
-  AlertTriangle,
 } from "lucide-react";
 import {
   ChatMessageItem,
@@ -33,6 +29,7 @@ import {
   AgentResearchStep,
 } from "@/types";
 import { extractKeyTerms, KeyTermsSummary } from "@/lib/key-terms";
+import { UntitledUiLogo } from "@/components/UntitledUiLogo";
 
 interface ChatAreaProps {
   selectedDocs: DocumentSummary[];
@@ -44,6 +41,8 @@ interface ChatAreaProps {
   onOpenCitation: (citation: VerifiedCitation) => void;
   activeDocText?: string;
   onOpenMobileSidebar?: () => void;
+  isZenMode?: boolean;
+  viewMode?: "split" | "chat" | "document";
 }
 
 export function ChatArea({
@@ -56,6 +55,7 @@ export function ChatArea({
   onOpenCitation,
   activeDocText = "",
   onOpenMobileSidebar,
+  isZenMode = false,
 }: ChatAreaProps) {
   const [input, setInput] = useState("");
   const [expandedStepsMap, setExpandedStepsMap] = useState<Record<string, boolean>>({});
@@ -103,51 +103,44 @@ export function ChatArea({
   const renderToolIcon = (tool: string) => {
     switch (tool) {
       case "search_document":
-        return <Search className="w-3.5 h-3.5 text-[#C5A880]" />;
+        return <Search className="w-3.5 h-3.5 text-[#2563EB]" />;
       case "get_section":
-        return <BookOpen className="w-3.5 h-3.5 text-emerald-500" />;
+        return <BookOpen className="w-3.5 h-3.5 text-emerald-600" />;
       case "list_clauses":
-        return <Layers className="w-3.5 h-3.5 text-purple-400" />;
+        return <Layers className="w-3.5 h-3.5 text-indigo-600" />;
       default:
-        return <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />;
+        return <Sparkles className="w-3.5 h-3.5 text-blue-500" />;
     }
   };
 
   return (
-    <div className="w-full flex flex-col h-full bg-white dark:bg-[#0F1116] overflow-hidden">
+    <div className="w-full flex flex-col h-full bg-white overflow-hidden text-zinc-900 font-sans">
       {/* Top Docket Header */}
-      <header className="px-4 lg:px-5 py-3 border-b border-[#E6E2D9] dark:border-[#222530] bg-white/90 dark:bg-[#101217]/90 backdrop-blur-md flex items-center justify-between shrink-0 z-10 shadow-2xs">
+      <header className="px-4 lg:px-6 py-3 border-b border-[#E5E5E2] bg-white flex items-center justify-between shrink-0 z-10">
         <div className="flex items-center gap-3">
           {onOpenMobileSidebar && (
             <button
               onClick={onOpenMobileSidebar}
-              className="lg:hidden p-1.5 -ml-1 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-md"
-              title="Open contracts drawer"
+              className="lg:hidden p-1.5 -ml-1 text-zinc-600 hover:bg-zinc-100 rounded-md"
+              title="Open agreements drawer"
             >
-              <Layers className="w-4 h-4 text-[#C5A880]" />
+              <Layers className="w-4 h-4 text-zinc-700" />
             </button>
           )}
 
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[10px] tracking-widest uppercase font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Legal Intelligence Workbench
-              </span>
-              <span className="hidden sm:inline-flex items-center gap-1 text-[9px] font-mono text-[#8F6E3B] dark:text-[#D8BE96] bg-[#C5A880]/15 px-2 py-0.5 rounded-full font-semibold border border-[#C5A880]/20">
-                <ShieldCheck className="w-3 h-3" />
-                CITATION-VERIFIED
-              </span>
-            </div>
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 truncate max-w-xs sm:max-w-md font-mono">
+            <h2 className="font-editorial text-base font-semibold text-zinc-900 tracking-tight">
+              Inquiry &amp; Diligence
+            </h2>
+            <p className="text-xs text-zinc-500 mt-0.5 truncate max-w-xs sm:max-w-md">
               {selectedDocs.length === 0 ? (
-                <span className="text-[#96610B] dark:text-yellow-400 font-sans">
-                  Select contracts from library to begin inquiry
+                <span className="text-amber-700">
+                  Select contracts from portfolio to begin
                 </span>
               ) : selectedDocs.length === 1 ? (
-                `Active Matter: ${selectedDocs[0].name}`
+                `Active: ${selectedDocs[0].name}`
               ) : (
-                `Comparative Analysis: ${selectedDocs.length} contracts selected`
+                `Comparing ${selectedDocs.length} contracts`
               )}
             </p>
           </div>
@@ -158,7 +151,7 @@ export function ChatArea({
             {selectedDocs.map((d) => (
               <span
                 key={d.id}
-                className="text-[10px] font-mono bg-white dark:bg-[#15171F] text-zinc-700 dark:text-zinc-300 px-2.5 py-1 rounded-md border border-[#E6E2D9] dark:border-[#2C303B] max-w-[140px] truncate shadow-2xs"
+                className="text-[11px] font-mono bg-[#FAFAF8] text-zinc-700 px-2.5 py-1 rounded-md border border-[#E5E5E2] max-w-[150px] truncate"
                 title={d.name}
               >
                 {d.name}
@@ -168,20 +161,20 @@ export function ChatArea({
         )}
       </header>
 
-      {/* Executive Key-Terms Pulse Bar */}
-      {keyTerms && (keyTerms.governingLaw || keyTerms.liabilityCap || keyTerms.terminationNotice) && (
-        <div className="border-b border-[#E6E2D9] dark:border-[#222530] bg-[#F7F4EE]/70 dark:bg-[#111319]/80 px-4 py-2 shrink-0">
-          <div className="flex items-center justify-between text-[11px] text-zinc-600 dark:text-zinc-400">
-            <div className="flex items-center gap-1.5 font-mono text-[10px] font-semibold text-[#8F6E3B] dark:text-[#D8BE96] uppercase tracking-wider">
-              <Scale className="w-3.5 h-3.5 text-[#C5A880]" />
-              <span>Extracted Key Deal Terms Pulse</span>
+      {/* Executive Key-Terms Pulse Bar (Hidden in Zen Mode) */}
+      {!isZenMode && keyTerms && (keyTerms.governingLaw || keyTerms.liabilityCap || keyTerms.terminationNotice) && (
+        <div className="border-b border-[#E5E5E2] bg-[#FAFAF8] px-4 lg:px-6 py-2 shrink-0">
+          <div className="flex items-center justify-between text-xs text-zinc-600">
+            <div className="flex items-center gap-1.5 font-medium text-zinc-700 text-xs">
+              <Scale className="w-3.5 h-3.5 text-[#1E3A8A]" />
+              <span>Extracted Key Deal Terms</span>
             </div>
 
             <button
               onClick={() => setShowPulseBar(!showPulseBar)}
-              className="text-[10px] font-mono text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+              className="text-[11px] text-zinc-400 hover:text-zinc-700 transition-colors"
             >
-              {showPulseBar ? "Collapse" : "Expand"}
+              {showPulseBar ? "Hide" : "Show"}
             </button>
           </div>
 
@@ -191,52 +184,44 @@ export function ChatArea({
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 pt-1 font-mono text-[10px]"
+                className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 pt-1 text-xs"
               >
                 {keyTerms.governingLaw && (
-                  <div className="p-0.5 rounded-lg bg-gradient-to-b from-[#C5A880]/20 to-transparent border border-[#C5A880]/25">
-                    <div className="bg-white dark:bg-[#161822] rounded-md px-2.5 py-1.5 flex items-center gap-2">
-                      <Landmark className="w-3.5 h-3.5 text-[#C5A880] shrink-0" />
-                      <div className="truncate">
-                        <span className="text-zinc-400 text-[9px] block uppercase font-semibold">GOVERNING LAW</span>
-                        <span className="font-semibold text-zinc-900 dark:text-zinc-100">{keyTerms.governingLaw}</span>
-                      </div>
+                  <div className="bg-white border border-[#E5E5E2] rounded-lg px-3 py-2 flex items-center gap-2 shadow-2xs">
+                    <Landmark className="w-3.5 h-3.5 text-[#1E3A8A] shrink-0" />
+                    <div className="truncate">
+                      <span className="text-zinc-400 text-[9px] block uppercase font-medium">GOVERNING LAW</span>
+                      <span className="font-medium text-zinc-900 truncate block">{keyTerms.governingLaw}</span>
                     </div>
                   </div>
                 )}
 
                 {keyTerms.liabilityCap && (
-                  <div className="p-0.5 rounded-lg bg-gradient-to-b from-red-500/20 to-transparent border border-red-500/25">
-                    <div className="bg-white dark:bg-[#161822] rounded-md px-2.5 py-1.5 flex items-center gap-2">
-                      <ShieldAlert className="w-3.5 h-3.5 text-[#A82E2E] dark:text-red-400 shrink-0" />
-                      <div className="truncate">
-                        <span className="text-zinc-400 text-[9px] block uppercase font-semibold">LIABILITY CAP</span>
-                        <span className="font-semibold text-zinc-900 dark:text-zinc-100">{keyTerms.liabilityCap}</span>
-                      </div>
+                  <div className="bg-white border border-[#E5E5E2] rounded-lg px-3 py-2 flex items-center gap-2 shadow-2xs">
+                    <ShieldAlert className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                    <div className="truncate">
+                      <span className="text-zinc-400 text-[9px] block uppercase font-medium">LIABILITY CAP</span>
+                      <span className="font-medium text-zinc-900 truncate block">{keyTerms.liabilityCap}</span>
                     </div>
                   </div>
                 )}
 
                 {keyTerms.terminationNotice && (
-                  <div className="p-0.5 rounded-lg bg-gradient-to-b from-emerald-500/20 to-transparent border border-emerald-500/25">
-                    <div className="bg-white dark:bg-[#161822] rounded-md px-2.5 py-1.5 flex items-center gap-2">
-                      <Clock className="w-3.5 h-3.5 text-[#1B663B] dark:text-[#86EFAC] shrink-0" />
-                      <div className="truncate">
-                        <span className="text-zinc-400 text-[9px] block uppercase font-semibold">NOTICE PERIOD</span>
-                        <span className="font-semibold text-zinc-900 dark:text-zinc-100">{keyTerms.terminationNotice}</span>
-                      </div>
+                  <div className="bg-white border border-[#E5E5E2] rounded-lg px-3 py-2 flex items-center gap-2 shadow-2xs">
+                    <Clock className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                    <div className="truncate">
+                      <span className="text-zinc-400 text-[9px] block uppercase font-medium">NOTICE PERIOD</span>
+                      <span className="font-medium text-zinc-900 truncate block">{keyTerms.terminationNotice}</span>
                     </div>
                   </div>
                 )}
 
                 {keyTerms.confidentialityTerm && (
-                  <div className="p-0.5 rounded-lg bg-gradient-to-b from-purple-500/20 to-transparent border border-purple-500/25">
-                    <div className="bg-white dark:bg-[#161822] rounded-md px-2.5 py-1.5 flex items-center gap-2">
-                      <Lock className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                      <div className="truncate">
-                        <span className="text-zinc-400 text-[9px] block uppercase font-semibold">CONFIDENTIALITY</span>
-                        <span className="font-semibold text-zinc-900 dark:text-zinc-100">{keyTerms.confidentialityTerm}</span>
-                      </div>
+                  <div className="bg-white border border-[#E5E5E2] rounded-lg px-3 py-2 flex items-center gap-2 shadow-2xs">
+                    <Lock className="w-3.5 h-3.5 text-[#1E3A8A] shrink-0" />
+                    <div className="truncate">
+                      <span className="text-zinc-400 text-[9px] block uppercase font-medium">CONFIDENTIALITY</span>
+                      <span className="font-medium text-zinc-900 truncate block">{keyTerms.confidentialityTerm}</span>
                     </div>
                   </div>
                 )}
@@ -250,131 +235,118 @@ export function ChatArea({
       <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 lg:p-6 space-y-6 scrollbar-thin min-w-0">
         {selectedDocs.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-6">
-            <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#14161E] border border-[#E6E2D9] dark:border-[#2C303E] text-[#8F6E3B] dark:text-[#D8BE96] flex items-center justify-center mb-4 shadow-sm">
-              <Scale className="w-7 h-7" />
-            </div>
-            <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 font-serif">
+            <UntitledUiLogo className="w-12 h-12 mb-4" size={48} />
+            <h3 className="text-sm font-semibold text-zinc-900 font-editorial">
               Select Contract Matter to Begin
             </h3>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-sm mt-1.5 leading-relaxed">
-              Check one or multiple agreements from the library to unlock citation-verified analysis, BM25 clause retrieval, and agentic diligence.
+            <p className="text-xs text-zinc-500 max-w-sm mt-1 leading-relaxed font-sans">
+              Check one or multiple agreements from the portfolio to unlock citation-verified analysis, BM25 clause retrieval, and diligence.
             </p>
           </div>
         ) : messages.length === 0 && !isLoading ? (
-          <div className="h-full flex flex-col items-center justify-center p-4 max-w-2xl mx-auto my-auto">
-            {/* Chamber Crest */}
-            <div className="flex flex-col items-center text-center mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-[#16171B] dark:bg-[#F2F1EE] text-[#C5A880] dark:text-[#8F6E3B] flex items-center justify-center mb-3 shadow-md border border-zinc-800/40">
-                <Scale className="w-6 h-6" />
-              </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#C5A880]/15 text-[#8F6E3B] dark:text-[#D8BE96] font-mono text-[9px] font-bold uppercase tracking-widest border border-[#C5A880]/20 mb-1.5">
-                MATTER INQUIRY CHAMBER
-              </div>
-              <h3 className="font-serif text-xl sm:text-2xl font-medium text-zinc-900 dark:text-zinc-100 tracking-tight">
-                Clause-Grounded Due Diligence
-              </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-md mt-1.5 leading-relaxed font-sans">
-                Every assertion is verified against exact contract clauses. Run structured diligence audits below or type custom counsel inquiries:
-              </p>
-            </div>
+          <div className="min-h-full py-10 px-6 flex flex-col items-center justify-center max-w-2xl mx-auto text-center">
+            <UntitledUiLogo className="w-10 h-10 mb-4" size={40} />
+            <h2 className="font-editorial text-2xl sm:text-3xl font-normal text-zinc-900 tracking-tight">
+              Contract Review &amp; Diligence
+            </h2>
+            <p className="text-sm text-zinc-500 max-w-md mt-2 mb-8 leading-relaxed font-sans">
+              Precise clause-grounded diligence with verified pin-cites. Select a query below or type your inquiry.
+            </p>
 
-            {/* Asymmetrical Diligence Bento Grid */}
+            {/* 4 Clean Diligence Inquiries */}
             <div className="w-full space-y-2.5 text-left">
-              {/* Primary Hero Card */}
+              {/* 1. Liability */}
               <motion.button
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
+                data-tour="liability-quick-query"
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.99 }}
                 onClick={() => onSendMessage("What is the limitation of liability cap and what exceptions apply to it?")}
-                className="group w-full p-4 rounded-xl border border-[#E6E2D9] dark:border-[#252834] bg-gradient-to-br from-white via-zinc-50/50 to-[#FAF8F4]/50 dark:from-[#13151D] dark:to-[#0F1116] hover:border-[#C5A880] dark:hover:border-[#C5A880]/70 transition-all shadow-xs flex items-center justify-between gap-4"
+                className="group w-full p-4 rounded-xl border border-[#E5E5E2] bg-white hover:border-[#1E3A8A] hover:shadow-xs transition-all flex items-center justify-between gap-4 text-left"
               >
-                <div className="space-y-1">
+                <div className="space-y-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-mono font-bold tracking-wider text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-2 py-0.5 rounded">
-                      HIGH EXPOSURE AUDIT
+                    <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-700">
+                      LIABILITY
                     </span>
-                    <span className="text-[10px] font-mono text-zinc-400">Section 4 Risk</span>
+                    <span className="text-xs font-medium text-zinc-900">
+                      Limitation of Liability &amp; Super-Caps
+                    </span>
                   </div>
-                  <div className="font-serif text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    Limitation of Liability &amp; Super-Cap Exclusions
-                  </div>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-md">
-                    Audit aggregate liability caps, consequential damage waivers, defense triggers, and uncapped breach exceptions.
+                  <p className="text-xs text-zinc-500 truncate">
+                    Aggregate liability caps, consequential damages waivers, and uncapped carve-outs.
                   </p>
                 </div>
-
-                <div className="w-8 h-8 rounded-full bg-[#16171B] dark:bg-[#F2F1EE] text-white dark:text-[#16171B] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
-                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </div>
+                <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-[#1E3A8A] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
               </motion.button>
 
-              {/* Secondary Bento Grid (3 columns) */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <motion.button
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => onSendMessage("What are the termination for convenience and termination for cause notice periods?")}
-                  className="group p-3 rounded-xl border border-[#E6E2D9] dark:border-[#252834] bg-white dark:bg-[#13151D] hover:border-[#C5A880] dark:hover:border-[#C5A880]/70 transition-all shadow-xs flex flex-col justify-between text-left"
-                >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-mono font-bold text-emerald-700 dark:text-[#86EFAC] bg-emerald-50 dark:bg-emerald-950/30 px-1.5 py-0.2 rounded">
-                        EXIT NOTICE
-                      </span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </div>
-                    <div className="font-serif text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-2">
-                      Termination &amp; Notice
-                    </div>
+              {/* 2. Termination */}
+              <motion.button
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={() => onSendMessage("What are the termination for convenience and termination for cause notice periods?")}
+                className="group w-full p-4 rounded-xl border border-[#E5E5E2] bg-white hover:border-[#1E3A8A] hover:shadow-xs transition-all flex items-center justify-between gap-4 text-left"
+              >
+                <div className="space-y-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-700">
+                      TERMINATION
+                    </span>
+                    <span className="text-xs font-medium text-zinc-900">
+                      Termination &amp; Notice Periods
+                    </span>
                   </div>
-                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
-                    Convenience vs breach cure periods
+                  <p className="text-xs text-zinc-500 truncate">
+                    Convenience notice requirements, material breach cure timelines, and exit remedies.
                   </p>
-                </motion.button>
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-[#1E3A8A] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+              </motion.button>
 
-                <motion.button
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => onSendMessage("Which state's governing law applies, and what is the dispute resolution venue?")}
-                  className="group p-3 rounded-xl border border-[#E6E2D9] dark:border-[#252834] bg-white dark:bg-[#13151D] hover:border-[#C5A880] dark:hover:border-[#C5A880]/70 transition-all shadow-xs flex flex-col justify-between text-left"
-                >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-mono font-bold text-[#8F6E3B] dark:text-[#D8BE96] bg-[#C5A880]/15 px-1.5 py-0.2 rounded">
-                        CHOICE OF LAW
-                      </span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </div>
-                    <div className="font-serif text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-2">
-                      Governing Law &amp; Venue
-                    </div>
+              {/* 3. Governing Law */}
+              <motion.button
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={() => onSendMessage("Which state's governing law applies, and what is the dispute resolution venue?")}
+                className="group w-full p-4 rounded-xl border border-[#E5E5E2] bg-white hover:border-[#1E3A8A] hover:shadow-xs transition-all flex items-center justify-between gap-4 text-left"
+              >
+                <div className="space-y-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-700">
+                      CHOICE OF LAW
+                    </span>
+                    <span className="text-xs font-medium text-zinc-900">
+                      Governing Law &amp; Dispute Forum
+                    </span>
                   </div>
-                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
-                    Jurisdiction &amp; conflict of law forum
+                  <p className="text-xs text-zinc-500 truncate">
+                    Controlling jurisdiction, conflict of laws waivers, and arbitration or court venue.
                   </p>
-                </motion.button>
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-[#1E3A8A] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+              </motion.button>
 
-                <motion.button
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => onSendMessage("What is the confidentiality term and does it survive contract termination?")}
-                  className="group p-3 rounded-xl border border-[#E6E2D9] dark:border-[#252834] bg-white dark:bg-[#13151D] hover:border-[#C5A880] dark:hover:border-[#C5A880]/70 transition-all shadow-xs flex flex-col justify-between text-left"
-                >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[9px] font-mono font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/30 px-1.5 py-0.2 rounded">
-                        IP SURVIVAL
-                      </span>
-                      <ArrowUpRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </div>
-                    <div className="font-serif text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-2">
-                      Confidentiality Term
-                    </div>
+              {/* 4. Confidentiality */}
+              <motion.button
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={() => onSendMessage("What is the confidentiality term and does it survive contract termination?")}
+                className="group w-full p-4 rounded-xl border border-[#E5E5E2] bg-white hover:border-[#1E3A8A] hover:shadow-xs transition-all flex items-center justify-between gap-4 text-left"
+              >
+                <div className="space-y-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-700">
+                      CONFIDENTIALITY
+                    </span>
+                    <span className="text-xs font-medium text-zinc-900">
+                      Confidentiality &amp; Post-Term Survival
+                    </span>
                   </div>
-                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
-                    Trade secret protection &amp; post-term survival
+                  <p className="text-xs text-zinc-500 truncate">
+                    Non-disclosure duration, trade secret protection, and return of confidential materials.
                   </p>
-                </motion.button>
-              </div>
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-zinc-400 group-hover:text-[#1E3A8A] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
+              </motion.button>
             </div>
           </div>
         ) : (
@@ -392,67 +364,60 @@ export function ChatArea({
                 className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
               >
                 {!isUser && (
-                  <div className="w-8 h-8 rounded-lg bg-[#16171B] dark:bg-[#F2F1EE] text-[#C5A880] dark:text-[#8F6E3B] flex items-center justify-center shrink-0 mt-1 text-xs shadow-xs border border-zinc-700/30">
-                    <Scale className="w-4 h-4" />
-                  </div>
+                  <UntitledUiLogo className="w-8 h-8 shrink-0 mt-1" size={32} />
                 )}
 
                 <div className={`max-w-[96%] sm:max-w-[90%] min-w-0 flex-1 space-y-3 ${isUser ? "ml-auto" : ""}`}>
                   {isUser ? (
                     /* User Inquiry Bubble */
-                    <div className="rounded-xl px-4 py-3 bg-[#18191E] dark:bg-[#1A1D24] text-white border border-zinc-700/60 dark:border-zinc-700/50 shadow-sm break-words">
-                      <div className="flex items-center justify-between gap-3 text-[10px] font-mono text-zinc-400 mb-1.5 border-b border-zinc-700/50 pb-1">
-                        <span className="uppercase tracking-wider font-semibold text-[#D8BE96]">
-                          INQUIRY // MATTER COUNSEL
+                    <div className="rounded-2xl px-5 py-3.5 bg-[#18181B] text-white shadow-xs max-w-xl ml-auto break-words">
+                      <div className="flex items-center justify-between gap-3 text-[10px] font-mono text-zinc-400 mb-1 border-b border-zinc-800 pb-1">
+                        <span className="uppercase tracking-wider font-medium text-zinc-300">
+                          COUNSEL INQUIRY
                         </span>
                         <span>
                           {msg.createdAt
                             ? new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-                            : "RECORDED"}
+                            : ""}
                         </span>
                       </div>
-                      <div className="text-xs leading-relaxed font-sans break-words">{msg.content}</div>
+                      <div className="text-xs sm:text-sm leading-relaxed text-zinc-100 break-words">{msg.content}</div>
                     </div>
                   ) : (
                     /* Assistant Legal Memorandum */
-                    <div className="rounded-xl border border-[#E6E2D9] dark:border-[#222532] bg-white dark:bg-[#121419] shadow-sm overflow-hidden legal-memo-paper min-w-0">
-                      {/* Memorandum Docket Header */}
-                      <div className="px-4 py-2.5 bg-[#FAF8F5] dark:bg-[#15171F] border-b border-[#E6E2D9] dark:border-[#222532] flex flex-wrap items-center justify-between gap-2 text-[10px] font-mono">
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <FileText className="w-3.5 h-3.5 text-[#C5A880]" />
-                          <span className="font-bold tracking-wider uppercase text-zinc-800 dark:text-zinc-200">
-                            MEMORANDUM OF LAW
-                          </span>
+                    <div className="rounded-2xl border border-[#E5E5E2] bg-white shadow-xs overflow-hidden min-w-0">
+                      {/* Memorandum Header */}
+                      <div className="px-5 py-3 bg-[#FAFAF8] border-b border-[#E5E5E2] flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2 text-zinc-800 font-medium">
+                          <FileText className="w-4 h-4 text-[#1E3A8A]" />
+                          <span className="font-editorial text-sm font-semibold">Memorandum of Counsel</span>
                         </div>
-                        <div className="flex items-center gap-2 text-zinc-400 dark:text-zinc-500 shrink-0">
-                          <span className="font-mono">
-                            DOCKET #{msg.id.slice(-6).toUpperCase()}
-                          </span>
-                          <span className="w-1 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-                          <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                            <ShieldCheck className="w-3 h-3" />
-                            GROUNDED
+                        <div className="flex items-center gap-2 text-zinc-400 text-[11px] font-mono">
+                          <span>
+                            {msg.createdAt
+                              ? new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                              : ""}
                           </span>
                         </div>
                       </div>
 
-                      {/* Agentic Autonomous Research Drawer */}
-                      {steps.length > 0 && (
-                        <div className="mx-4 mt-3 rounded-lg border border-[#E6E2D9] dark:border-[#262A34] bg-[#FAF8F5]/80 dark:bg-[#15171E]/80 p-2.5 text-xs font-mono">
+                      {/* Autonomous Research Trace (Hidden in Zen Mode) */}
+                      {!isZenMode && steps.length > 0 && (
+                        <div className="mx-5 mt-3 rounded-lg border border-[#E5E5E2] bg-[#FAFAF8] p-2.5 text-xs font-mono">
                           <button
                             onClick={() => toggleSteps(msg.id)}
-                            className="flex items-center justify-between w-full text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                            className="flex items-center justify-between w-full text-zinc-700 hover:text-zinc-900 transition-colors"
                           >
                             <span className="flex items-center gap-2 text-[11px]">
-                              <Compass className="w-3.5 h-3.5 text-[#C5A880]" />
-                              <span className="font-semibold text-zinc-900 dark:text-zinc-100">
-                                Autonomous Tool Trace ({steps.length} rounds)
+                              <Compass className="w-3.5 h-3.5 text-[#1E3A8A]" />
+                              <span className="font-medium text-zinc-800">
+                                Research trace ({steps.length} rounds)
                               </span>
                             </span>
                             {isExpanded ? (
-                              <ChevronDown className="w-3.5 h-3.5" />
+                              <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
                             ) : (
-                              <ChevronRight className="w-3.5 h-3.5" />
+                              <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
                             )}
                           </button>
 
@@ -462,21 +427,19 @@ export function ChatArea({
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
-                                className="mt-2 pt-2 border-t border-[#E6E2D9] dark:border-[#262A34] space-y-2 text-[10px]"
+                                className="mt-2 pt-2 border-t border-[#E5E5E2] space-y-1.5 text-[11px]"
                               >
                                 {steps.map((step, sIdx) => (
                                   <div
                                     key={step.id || sIdx}
-                                    className="p-1.5 rounded bg-white dark:bg-[#101217] border border-[#E6E2D9] dark:border-[#242732] flex items-start gap-2"
+                                    className="p-2 rounded bg-white border border-[#E5E5E2] flex items-start gap-2"
                                   >
                                     <span className="mt-0.5 shrink-0">{renderToolIcon(step.tool)}</span>
                                     <div className="flex-1">
-                                      <div className="flex items-center gap-1.5 font-bold text-zinc-800 dark:text-zinc-200">
-                                        <span>Round {step.round}</span>
-                                        <span className="text-zinc-400 font-normal">|</span>
-                                        <span className="text-[#8F6E3B] dark:text-[#D8BE96]">{step.tool}</span>
+                                      <div className="font-medium text-zinc-800">
+                                        Round {step.round} · <span className="text-[#1E3A8A]">{step.tool}</span>
                                       </div>
-                                      <div className="text-zinc-600 dark:text-zinc-400 mt-0.5">{step.message}</div>
+                                      <div className="text-zinc-600 mt-0.5">{step.message}</div>
                                     </div>
                                   </div>
                                 ))}
@@ -487,126 +450,86 @@ export function ChatArea({
                       )}
 
                       {/* Memorandum Content */}
-                      <div className="px-5 py-4 text-xs leading-relaxed text-zinc-800 dark:text-zinc-200 font-sans break-words overflow-hidden">
-                        <div className="whitespace-pre-wrap break-words selection:bg-[#C5A880]/30">{msg.content}</div>
+                      <div className="px-6 py-5 text-xs sm:text-sm leading-relaxed text-zinc-800 font-sans break-words whitespace-pre-wrap selection:bg-[#1E3A8A]/10">
+                        {msg.content}
                       </div>
 
                       {/* Verified Evidence & Pin-Cites Section */}
                       {msg.citations && msg.citations.length > 0 && (
-                        <div className="px-5 pb-5 pt-2 border-t border-[#E6E2D9] dark:border-[#222532] space-y-2.5">
-                          <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-                            <span className="flex items-center gap-1.5 font-bold text-zinc-700 dark:text-zinc-300">
-                              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                              VERIFIED CONTRACT EVIDENCE PIN-CITES ({msg.citations.length})
-                            </span>
-                            <span className="text-[9px] text-[#8F6E3B] dark:text-[#D8BE96] bg-[#C5A880]/10 px-1.5 py-0.5 rounded">
-                              EXACT MATCH
+                        <div className="px-6 pb-6 pt-3 border-t border-[#E5E5E2] space-y-3">
+                          <div className="flex items-center justify-between text-xs text-zinc-500">
+                            <span className="flex items-center gap-1.5 font-medium text-zinc-700">
+                              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                              Verified Evidence ({msg.citations.length})
                             </span>
                           </div>
 
                           <div className="grid grid-cols-1 gap-2.5">
                             {msg.citations.map((cit) => (
-                              /* Concentric Double-Bezel Hardware Container */
                               <div
                                 key={cit.id}
-                                className={`p-1 rounded-xl transition-all ${
-                                  cit.isVerified
-                                    ? "bg-gradient-to-b from-[#C5A880]/20 via-[#FAF8F5] to-[#F5F2EB] dark:from-[#C5A880]/15 dark:via-[#161820] dark:to-[#111318] border border-[#C5A880]/30 dark:border-[#C5A880]/20"
-                                    : "bg-gradient-to-b from-amber-500/20 to-transparent border border-amber-500/30"
-                                }`}
+                                className="bg-[#FAFAF8] border border-[#E5E5E2] rounded-xl p-3.5 transition-all hover:border-zinc-300 hover:bg-white"
                               >
-                                <div className="bg-white dark:bg-[#14161E] rounded-lg p-3 border border-[#E6E2D9] dark:border-[#242732] shadow-2xs">
-                                  <div className="flex flex-wrap items-center justify-between gap-y-1.5 gap-x-2 mb-2">
-                                    <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-                                      {cit.isVerified ? (
-                                        <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800/50 flex items-center gap-1 shrink-0">
-                                          <Check className="w-2.5 h-2.5 stroke-[3]" />
-                                          PIN-CITE
-                                        </span>
-                                      ) : (
-                                        <span className="text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 rounded bg-amber-50 dark:bg-yellow-950/40 text-amber-700 dark:text-yellow-300 border border-amber-300 dark:border-yellow-800/50 flex items-center gap-1 shrink-0">
-                                          <AlertTriangle className="w-2.5 h-2.5" />
-                                          UNVERIFIED
-                                        </span>
-                                      )}
+                                <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                                  <div className="flex items-center gap-2 flex-wrap min-w-0">
+                                    <span
+                                      className={`text-[10px] font-mono px-2 py-0.5 rounded font-medium border ${
+                                        cit.isVerified
+                                          ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                                          : "bg-amber-50 text-amber-800 border-amber-200"
+                                      }`}
+                                    >
+                                      {cit.isVerified ? "PIN-CITE" : "UNVERIFIED"}
+                                    </span>
 
-                                      <span className="text-[11px] font-medium text-zinc-900 dark:text-zinc-100 truncate max-w-[130px] sm:max-w-xs">
-                                        {cit.documentName}
+                                    <span className="text-xs font-medium text-zinc-900 truncate max-w-xs">
+                                      {cit.documentName}
+                                    </span>
+
+                                    {cit.pageNumber && (
+                                      <span className="text-[10px] font-mono text-zinc-400 bg-white border border-[#E5E5E2] px-1.5 py-0.5 rounded">
+                                        p. {cit.pageNumber}
                                       </span>
-
-                                      {cit.pageNumber && (
-                                        <span className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded shrink-0">
-                                          p. {cit.pageNumber}
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    {/* Action Buttons */}
-                                    <div className="flex items-center gap-1.5 shrink-0 ml-auto">
-                                      {/* Copy Pin-Cite button */}
-                                      <motion.button
-                                        whileTap={{ scale: 0.94 }}
-                                        type="button"
-                                        onClick={() => copyLegalCitation(cit)}
-                                        className="flex items-center gap-1 text-[10px] font-mono px-2 py-1 rounded border border-[#E6E2D9] dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-[#C5A880] transition-colors bg-zinc-50 dark:bg-zinc-850"
-                                        title="Copy formatted citation"
-                                      >
-                                        {copiedCitationId === cit.id ? (
-                                          <>
-                                            <CheckCheck className="w-3 h-3 text-emerald-600" />
-                                            <span className="text-emerald-600 font-semibold">Copied</span>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <Copy className="w-3 h-3 text-zinc-400" />
-                                            <span>Cite</span>
-                                          </>
-                                        )}
-                                      </motion.button>
-
-                                      {/* Open Source Button */}
-                                      {cit.isVerified && (
-                                        <motion.button
-                                          whileTap={{ scale: 0.94 }}
-                                          type="button"
-                                          onClick={() => onOpenCitation(cit)}
-                                          className="group flex items-center gap-1 text-[10px] font-mono font-medium px-2.5 py-1 rounded bg-[#16171B] dark:bg-[#F2F1EE] text-white dark:text-[#16171B] hover:bg-[#282A33] dark:hover:bg-white transition-colors shadow-2xs"
-                                        >
-                                          <span>Inspect</span>
-                                          <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                                        </motion.button>
-                                      )}
-                                    </div>
+                                    )}
                                   </div>
 
-                                  {/* Editorial Serif Blockquote */}
-                                  <blockquote className="border-l-2 border-[#C5A880] pl-3 italic text-zinc-700 dark:text-zinc-300 font-serif text-xs leading-relaxed my-2">
-                                    &ldquo;{cit.quote}&rdquo;
-                                  </blockquote>
+                                  <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+                                    <button
+                                      onClick={() => copyLegalCitation(cit)}
+                                      className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-md border border-[#E5E5E2] text-zinc-600 hover:text-zinc-900 hover:bg-white bg-white transition-colors"
+                                      title="Copy formatted citation"
+                                    >
+                                      {copiedCitationId === cit.id ? (
+                                        <span className="text-emerald-700 font-medium">Copied</span>
+                                      ) : (
+                                        <>
+                                          <Copy className="w-3 h-3 text-zinc-400" />
+                                          <span>Cite</span>
+                                        </>
+                                      )}
+                                    </button>
 
-                                  {!cit.isVerified && cit.reason && (
-                                    <p className="text-[10px] text-amber-700 dark:text-yellow-400 mt-1.5 font-mono">
-                                      {cit.reason}
-                                    </p>
-                                  )}
-
-                                  {cit.occurrencesCount > 1 && (
-                                    <p className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 mt-1">
-                                      Appears {cit.occurrencesCount} times in agreement (pointing to primary anchor)
-                                    </p>
-                                  )}
+                                    {cit.isVerified && (
+                                      <button
+                                        data-tour="citation-inspect-btn"
+                                        onClick={() => onOpenCitation(cit)}
+                                        className="flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-md bg-[#1E3A8A] text-white hover:bg-[#172554] transition-colors shadow-2xs"
+                                      >
+                                        <span>Inspect ↗</span>
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
+
+                                <blockquote className="border-l-2 border-[#1E3A8A] pl-3 italic text-zinc-800 font-editorial text-sm leading-relaxed my-2 py-1">
+                                  &ldquo;{cit.quote}&rdquo;
+                                </blockquote>
+
+                                {!cit.isVerified && cit.reason && (
+                                  <p className="text-[11px] text-amber-700 mt-1 font-mono">{cit.reason}</p>
+                                )}
                               </div>
                             ))}
-                          </div>
-
-                          {/* Grounding Seal Footer */}
-                          <div className="pt-2 flex items-center justify-between text-[9px] font-mono text-zinc-400 dark:text-zinc-500">
-                            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
-                              <Award className="w-3 h-3" />
-                              INDEPENDENT GROUNDING VERIFICATION PASSED
-                            </span>
-                            <span>ZERO HALLUCINATIONS TOLERATED</span>
                           </div>
                         </div>
                       )}
@@ -621,27 +544,27 @@ export function ChatArea({
         {/* Live streaming status banner with stop button */}
         {isLoading && (
           <div className="flex gap-3 justify-start">
-            <div className="w-8 h-8 rounded-lg bg-[#16171B] dark:bg-[#F2F1EE] text-[#C5A880] dark:text-[#8F6E3B] flex items-center justify-center shrink-0 mt-1 text-xs shadow-xs border border-zinc-700/30">
+            <div className="w-8 h-8 rounded-lg bg-[#1E3A8A]/10 text-[#1E3A8A] flex items-center justify-center shrink-0 mt-1 text-xs">
               <Scale className="w-4 h-4 animate-pulse" />
             </div>
 
             <div className="space-y-2 max-w-[85%]">
-              {activeSteps.length > 0 && (
-                <div className="rounded-lg border border-[#E6E2D9] dark:border-[#262A34] bg-white dark:bg-[#14161C] p-3 text-xs text-zinc-700 dark:text-zinc-300 font-mono shadow-2xs">
+              {activeSteps.length > 0 && !isZenMode && (
+                <div className="rounded-lg border border-[#E5E5E2] bg-white p-3 text-xs text-zinc-800 font-mono shadow-xs">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-[#C5A880] animate-ping shrink-0" />
-                    <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    <div className="w-2 h-2 rounded-full bg-[#1E3A8A] animate-ping shrink-0" />
+                    <span className="font-medium text-zinc-900">
                       {activeSteps[activeSteps.length - 1].message}
                     </span>
                   </div>
                 </div>
               )}
 
-              <div className="inline-flex items-center gap-2 text-xs font-mono text-zinc-400 bg-white/60 dark:bg-[#14161C]/60 px-3 py-1.5 rounded-full border border-[#E6E2D9] dark:border-[#242730]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] animate-bounce" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] animate-bounce [animation-delay:0.2s]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C5A880] animate-bounce [animation-delay:0.4s]" />
-                <span className="ml-1 font-medium">Synthesizing citation-verified legal memorandum...</span>
+              <div className="inline-flex items-center gap-2 text-xs font-mono text-zinc-500 bg-white px-3 py-1.5 rounded-full border border-[#E5E5E2] shadow-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#1E3A8A] animate-bounce" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#1E3A8A] animate-bounce [animation-delay:0.2s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#1E3A8A] animate-bounce [animation-delay:0.4s]" />
+                <span className="ml-1 font-medium">Synthesizing citation-verified memorandum...</span>
               </div>
             </div>
           </div>
@@ -650,51 +573,50 @@ export function ChatArea({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input box - Double-Bezel Hardware Architecture */}
-      <div className="p-3 lg:p-4 border-t border-[#E6E2D9] dark:border-[#222530] bg-white/95 dark:bg-[#101217]/95 backdrop-blur-md">
+      {/* Input box */}
+      <div className="p-3 lg:p-4 border-t border-[#E5E5E2] bg-white">
         <form onSubmit={handleSubmit}>
-          <div className="p-1 rounded-2xl bg-[#F0EDE6] dark:bg-[#161822] border border-[#E6E2D9] dark:border-[#2A2E3D] shadow-2xs">
-            <div className="bg-white dark:bg-[#0E1015] rounded-xl p-2 relative">
-              <textarea
-                ref={textareaRef}
-                rows={2}
-                value={input}
-                disabled={selectedDocs.length === 0}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={
-                  selectedDocs.length === 0
-                    ? "Select a contract from the library to ask questions..."
-                    : "Ask about liability caps, notice periods, governing law... (Shift+Enter for newline)"
-                }
-                className="w-full resize-none bg-transparent px-2.5 py-1.5 pr-28 text-xs text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none disabled:opacity-50 font-sans"
-              />
+          <div className="border border-[#E5E5E2] focus-within:border-[#1E3A8A] bg-[#FAFAF8] focus-within:bg-white rounded-2xl p-2.5 transition-all shadow-2xs relative">
+            <textarea
+              ref={textareaRef}
+              data-tour="chat-input"
+              rows={2}
+              value={input}
+              disabled={selectedDocs.length === 0}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={
+                selectedDocs.length === 0
+                  ? "Select a contract from the portfolio to begin..."
+                  : "Ask about liability caps, notice periods, governing law... (Shift+Enter for newline)"
+              }
+              className="w-full resize-none bg-transparent px-2 py-1 pr-24 text-xs sm:text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none disabled:opacity-50 font-sans"
+            />
 
-              <div className="absolute right-3 bottom-3 flex items-center gap-1.5">
-                {isLoading ? (
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    type="button"
-                    onClick={onStopGeneration}
-                    title="Stop generation"
-                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-white bg-[#A82E2E] hover:bg-[#8F2626] rounded-lg transition-colors shadow-2xs"
-                  >
-                    <Square className="w-3 h-3 fill-current" />
-                    <span>Stop</span>
-                  </motion.button>
-                ) : (
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.96 }}
-                    type="submit"
-                    disabled={!input.trim() || selectedDocs.length === 0}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-[#16171B] hover:bg-[#282A33] dark:bg-[#F2F1EE] dark:text-[#16171B] dark:hover:bg-white disabled:opacity-40 rounded-lg transition-colors shadow-2xs"
-                  >
-                    <span>Execute</span>
-                    <Send className="w-3 h-3" />
-                  </motion.button>
-                )}
-              </div>
+            <div className="absolute right-2.5 bottom-2.5 flex items-center gap-1.5">
+              {isLoading ? (
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  type="button"
+                  onClick={onStopGeneration}
+                  title="Stop generation"
+                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors shadow-xs"
+                >
+                  <Square className="w-3 h-3 fill-current" />
+                  <span>Stop</span>
+                </motion.button>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  type="submit"
+                  disabled={!input.trim() || selectedDocs.length === 0}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium text-white bg-[#1E3A8A] hover:bg-[#172554] disabled:opacity-30 rounded-lg transition-colors shadow-xs"
+                >
+                  <span>Ask</span>
+                  <Send className="w-3 h-3" />
+                </motion.button>
+              )}
             </div>
           </div>
         </form>

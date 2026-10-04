@@ -63,12 +63,12 @@ export function chunkDocument(
   let chunkIndex = 0;
   let globalCharOffset = 0;
   let currentSectionTitle = "General Provisions";
+  let currentChunkText = "";
+  let chunkStartOffset = 0;
+  let chunkPageNumber = pages[0]?.pageNumber || 1;
 
   for (const page of pages) {
     const lines = page.text.split(/\r?\n/);
-    let currentChunkText = "";
-    let chunkStartOffset = globalCharOffset;
-    let chunkPageNumber = page.pageNumber;
 
     for (let lIdx = 0; lIdx < lines.length; lIdx++) {
       const line = lines[lIdx].trim();
@@ -79,12 +79,11 @@ export function chunkDocument(
 
       // Check if line is a new clause heading
       const detectedHeading = extractSectionTitle(line);
-      const isNewSection = !!detectedHeading;
 
-      // If we hit a new section heading and already have accumulated text, flush chunk
-      if (isNewSection && currentChunkText.trim().length >= 40) {
-        const trimmed = currentChunkText.trim();
-        if (trimmed.length > 0) {
+      if (detectedHeading) {
+        // If we hit a new section heading, flush any accumulated chunk from the PREVIOUS section
+        if (currentChunkText.trim().length > 0) {
+          const trimmed = currentChunkText.trim();
           chunks.push({
             id: `${documentId}_chunk_${chunkIndex}`,
             documentId,
@@ -99,25 +98,19 @@ export function chunkDocument(
           chunkIndex++;
         }
 
-        // Keep last small overlap for context
-        const words = currentChunkText.trim().split(/\s+/);
-        const overlap = words.slice(-Math.min(words.length, 15)).join(" ");
-        currentChunkText = overlap ? `${overlap}\n${line}\n` : `${line}\n`;
+        // Start new section cleanly: NEVER prepend overlap from the previous section!
+        currentSectionTitle = detectedHeading;
+        currentChunkText = `${line}\n`;
         chunkStartOffset = globalCharOffset;
         chunkPageNumber = page.pageNumber;
-        currentSectionTitle = detectedHeading || currentSectionTitle;
         globalCharOffset += lines[lIdx].length + 1;
         continue;
       }
 
-      if (detectedHeading) {
-        currentSectionTitle = detectedHeading;
-      }
-
-      // Append line
+      // Append line within the current section
       currentChunkText += `${line}\n`;
 
-      // If chunk exceeded target max size, flush at sentence or paragraph boundary
+      // If chunk exceeded target max size, split strictly WITHIN the current section
       if (currentChunkText.length >= maxChunkSize) {
         const trimmed = currentChunkText.trim();
         chunks.push({
@@ -133,7 +126,7 @@ export function chunkDocument(
         });
         chunkIndex++;
 
-        // Prepare next chunk with overlap
+        // Context overlap is strictly allowed ONLY within the same section
         const overlapSlice = currentChunkText.slice(-overlapSize).trim();
         currentChunkText = overlapSlice ? `${overlapSlice}\n` : "";
         chunkStartOffset = globalCharOffset + lines[lIdx].length - (overlapSlice?.length || 0);
@@ -142,24 +135,23 @@ export function chunkDocument(
 
       globalCharOffset += lines[lIdx].length + 1;
     }
+  }
 
-    // Flush any remaining text on the page if substantial
-    if (currentChunkText.trim().length >= 100) {
-      const trimmed = currentChunkText.trim();
-      chunks.push({
-        id: `${documentId}_chunk_${chunkIndex}`,
-        documentId,
-        chunkIndex,
-        pageNumber: chunkPageNumber,
-        sectionTitle: currentSectionTitle,
-        content: trimmed,
-        normalizedContent: normalizeText(trimmed),
-        startChar: chunkStartOffset,
-        endChar: chunkStartOffset + trimmed.length,
-      });
-      chunkIndex++;
-      currentChunkText = "";
-    }
+  // Flush any final remaining text
+  if (currentChunkText.trim().length > 0) {
+    const trimmed = currentChunkText.trim();
+    chunks.push({
+      id: `${documentId}_chunk_${chunkIndex}`,
+      documentId,
+      chunkIndex,
+      pageNumber: chunkPageNumber,
+      sectionTitle: currentSectionTitle,
+      content: trimmed,
+      normalizedContent: normalizeText(trimmed),
+      startChar: chunkStartOffset,
+      endChar: chunkStartOffset + trimmed.length,
+    });
+    chunkIndex++;
   }
 
   // If document was very short and nothing was flushed yet

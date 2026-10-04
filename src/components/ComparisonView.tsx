@@ -71,20 +71,20 @@ export function ComparisonView({
     switch (significance) {
       case "high":
         return (
-          <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-[#FDF0F0] text-[#A82E2E] dark:bg-red-950/40 dark:text-red-300 border border-[#A82E2E]/20 flex items-center gap-1">
+          <span className="px-2 py-0.5 rounded text-[9px] font-grotesk font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-200 flex items-center gap-1">
             <ShieldAlert className="w-2.5 h-2.5" />
             HIGH SIGNIFICANCE
           </span>
         );
       case "medium":
         return (
-          <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-[#FEF7EB] text-[#96610B] dark:bg-yellow-950/40 dark:text-yellow-300 border border-[#96610B]/20">
+          <span className="px-2 py-0.5 rounded text-[9px] font-grotesk font-bold uppercase tracking-wider bg-amber-50 text-amber-800 border border-amber-200">
             MEDIUM
           </span>
         );
       case "low":
         return (
-          <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+          <span className="px-2 py-0.5 rounded text-[9px] font-grotesk font-bold uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">
             LOW
           </span>
         );
@@ -95,19 +95,19 @@ export function ComparisonView({
     switch (type) {
       case "added":
         return (
-          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-[#EDF8F1] text-[#1B663B] dark:bg-emerald-950/40 dark:text-[#86EFAC]">
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
             + Added
           </span>
         );
       case "removed":
         return (
-          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-[#FDF0F0] text-[#A82E2E] dark:bg-red-950/40 dark:text-red-300">
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-red-50 text-red-700 border border-red-200">
             - Removed
           </span>
         );
       case "modified":
         return (
-          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-semibold bg-[#EBF5FA] text-[#1F6C9F] dark:bg-blue-950/40 dark:text-blue-300">
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
             ~ Modified
           </span>
         );
@@ -123,25 +123,25 @@ export function ComparisonView({
   });
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+    <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6">
       <motion.div
         initial={{ scale: 0.96, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.96, opacity: 0 }}
         transition={{ type: "spring", stiffness: 350, damping: 28 }}
-        className="bg-white dark:bg-[#111216] border border-[#E6E2D9] dark:border-[#242730] rounded-xl w-full max-w-5xl h-[92vh] flex flex-col shadow-2xl overflow-hidden"
+        className="bg-white border border-slate-200 rounded-2xl w-full max-w-5xl h-[92vh] flex flex-col shadow-2xl overflow-hidden font-sans text-slate-900"
       >
         {/* Top Header */}
-        <header className="px-5 py-3.5 border-b border-[#E6E2D9] dark:border-[#242730] flex items-center justify-between bg-[#FBF9F6] dark:bg-[#0C0D10] shrink-0">
+        <header className="px-5 py-3.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-md bg-[#16171B] dark:bg-[#F2F1EE] text-[#C5A880] dark:text-[#8F6E3B] flex items-center justify-center shadow-xs">
+            <div className="w-7 h-7 rounded-lg bg-[#2563EB] text-white flex items-center justify-center shadow-xs">
               <GitCompare className="w-3.5 h-3.5" />
             </div>
             <div>
-              <h2 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 tracking-wider uppercase font-mono">
+              <h2 className="text-xs font-bold text-slate-900 tracking-wider uppercase font-grotesk">
                 Contract Clause Comparison &amp; Material Diff
               </h2>
-              <p className="text-[11px] text-zinc-400 dark:text-zinc-500">
+              <p className="text-[11px] text-slate-500 font-sans">
                 Identify added, removed, and modified clauses, liability cap changes, and governing law shifts.
               </p>
             </div>
@@ -149,23 +149,23 @@ export function ComparisonView({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </header>
 
         {/* Contract Selectors Bar */}
-        <div className="px-5 py-3 border-b border-[#E6E2D9] dark:border-[#242730] bg-white dark:bg-[#111216] flex flex-wrap items-center justify-between gap-4 shrink-0">
+        <div className="px-5 py-3 border-b border-slate-200 bg-white flex flex-wrap items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3 flex-1 min-w-[280px]">
             <div className="flex-1">
-              <label className="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 mb-1">
+              <label className="block text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-1 font-semibold">
                 BASE CONTRACT (VERSION A)
               </label>
               <select
                 value={docAId}
                 onChange={(e) => setDocAId(e.target.value)}
-                className="w-full text-xs rounded-md border border-[#D5CFC4] dark:border-[#2C303B] bg-white dark:bg-[#15171D] px-2.5 py-1.5 font-medium text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-[#C5A880]"
+                className="w-full text-xs rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-medium text-slate-900 focus:outline-none focus:border-blue-500"
               >
                 {documents.map((d) => (
                   <option key={d.id} value={d.id}>
@@ -175,18 +175,18 @@ export function ComparisonView({
               </select>
             </div>
 
-            <div className="pt-4 text-[#C5A880]">
+            <div className="pt-4 text-[#2563EB]">
               <ArrowRight className="w-3.5 h-3.5" />
             </div>
 
             <div className="flex-1">
-              <label className="block text-[10px] font-mono uppercase tracking-wider text-zinc-400 mb-1">
+              <label className="block text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-1 font-semibold">
                 COMPARED CONTRACT (VERSION B)
               </label>
               <select
                 value={docBId}
                 onChange={(e) => setDocBId(e.target.value)}
-                className="w-full text-xs rounded-md border border-[#D5CFC4] dark:border-[#2C303B] bg-white dark:bg-[#15171D] px-2.5 py-1.5 font-medium text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-[#C5A880]"
+                className="w-full text-xs rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-medium text-slate-900 focus:outline-none focus:border-blue-500"
               >
                 {documents.map((d) => (
                   <option key={d.id} value={d.id}>
@@ -201,83 +201,83 @@ export function ComparisonView({
             whileTap={{ scale: 0.97 }}
             onClick={runComparison}
             disabled={isComparing || docAId === docBId}
-            className="px-4 py-2 text-xs font-semibold text-white bg-[#16171B] hover:bg-[#272930] dark:bg-[#F2F1EE] dark:text-[#16171B] dark:hover:bg-white disabled:opacity-40 rounded-md transition-colors shadow-xs shrink-0"
+            className="px-4 py-2 text-xs font-grotesk font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-40 rounded-lg transition-colors shadow-xs shrink-0"
           >
             {isComparing ? "Analyzing Differences..." : "Compare Contracts"}
           </motion.button>
         </div>
 
         {error && (
-          <div className="p-3 mx-5 mt-3 bg-[#FDF0F0] dark:bg-red-950/30 border border-[#A82E2E]/20 rounded-md text-[#A82E2E] dark:text-red-300 text-xs flex items-center gap-2">
+          <div className="p-3 mx-5 mt-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs flex items-center gap-2">
             <AlertCircle className="w-3.5 h-3.5 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {/* Report Content */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 scrollbar-thin bg-slate-50">
           {!report && !isComparing ? (
-            <div className="h-full flex flex-col items-center justify-center text-center p-8 text-zinc-400">
-              <Scale className="w-10 h-10 text-zinc-300 dark:text-zinc-700 mb-2" />
-              <h3 className="text-xs font-mono uppercase tracking-wider font-semibold text-zinc-700 dark:text-zinc-300">
+            <div className="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400">
+              <Scale className="w-10 h-10 text-slate-300 mb-2" />
+              <h3 className="text-xs font-grotesk uppercase tracking-wider font-bold text-slate-700">
                 Ready for Version Comparison
               </h3>
-              <p className="text-xs max-w-sm mt-1 leading-relaxed text-zinc-400 dark:text-zinc-500">
+              <p className="text-xs max-w-sm mt-1 leading-relaxed text-slate-500 font-sans">
                 Select two contracts above and click &ldquo;Compare Contracts&rdquo; to generate substantive legal diff analysis.
               </p>
             </div>
           ) : isComparing ? (
             <div className="h-full flex flex-col items-center justify-center text-center p-8">
-              <div className="w-8 h-8 border-2 border-[#C5A880] border-t-transparent rounded-full animate-spin mb-3" />
-              <p className="text-xs font-mono text-zinc-600 dark:text-zinc-400">
+              <div className="w-8 h-8 border-2 border-[#2563EB] border-t-transparent rounded-full animate-spin mb-3" />
+              <p className="text-xs font-mono text-slate-600">
                 Extracting clauses, comparing material values, and rating significance...
               </p>
             </div>
           ) : report ? (
             <>
               {/* Executive Substantive Changes Summary */}
-              <div className="bg-[#FAF8F5] dark:bg-[#14161C] border border-[#E6E2D9] dark:border-[#262A34] rounded-lg p-4 shadow-2xs">
-                <h3 className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-1.5 flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-[#1B663B] dark:text-[#86EFAC]" />
+              <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+                <h3 className="text-[10px] font-grotesk font-bold uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Substantive Legal Changes Summary</span>
                 </h3>
-                <div className="text-xs leading-relaxed text-zinc-800 dark:text-zinc-200 whitespace-pre-line font-serif">
+                <div className="text-xs leading-relaxed text-slate-800 whitespace-pre-line font-legal-serif">
                   {report.summary}
                 </div>
               </div>
 
               {/* Stats Cards (Flat Bento Grid) */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="bg-white dark:bg-[#15171D] border border-[#E6E2D9] dark:border-[#262A34] p-3 rounded-lg shadow-2xs">
-                  <div className="text-[10px] font-mono uppercase text-zinc-400">TOTAL CLAUSES</div>
-                  <div className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5 font-serif">
+                <div className="bg-white border border-slate-200 p-3 rounded-xl shadow-xs">
+                  <div className="text-[10px] font-mono uppercase text-slate-400 font-semibold">TOTAL CLAUSES</div>
+                  <div className="text-base font-bold text-slate-900 mt-0.5 font-grotesk">
                     {report.stats.totalClausesA} vs {report.stats.totalClausesB}
                   </div>
                 </div>
 
-                <div className="bg-[#FDF0F0]/60 dark:bg-red-950/20 border border-[#A82E2E]/20 p-3 rounded-lg">
-                  <div className="text-[10px] font-mono uppercase text-[#A82E2E] dark:text-red-300">
+                <div className="bg-red-50/60 border border-red-200 p-3 rounded-xl">
+                  <div className="text-[10px] font-mono uppercase text-red-700 font-semibold">
                     HIGH SIGNIFICANCE
                   </div>
-                  <div className="text-base font-semibold text-[#A82E2E] dark:text-red-300 mt-0.5 font-serif">
+                  <div className="text-base font-bold text-red-700 mt-0.5 font-grotesk">
                     {report.stats.highSignificanceCount}
                   </div>
                 </div>
 
-                <div className="bg-[#FEF7EB]/60 dark:bg-yellow-950/20 border border-[#96610B]/20 p-3 rounded-lg">
-                  <div className="text-[10px] font-mono uppercase text-[#96610B] dark:text-yellow-300">
+                <div className="bg-amber-50/60 border border-amber-200 p-3 rounded-xl">
+                  <div className="text-[10px] font-mono uppercase text-amber-800 font-semibold">
                     MEDIUM SIGNIFICANCE
                   </div>
-                  <div className="text-base font-semibold text-[#96610B] dark:text-yellow-300 mt-0.5 font-serif">
+                  <div className="text-base font-bold text-amber-800 mt-0.5 font-grotesk">
                     {report.stats.mediumSignificanceCount}
                   </div>
                 </div>
 
-                <div className="bg-[#EBF5FA]/60 dark:bg-blue-950/20 border border-[#1F6C9F]/20 p-3 rounded-lg">
-                  <div className="text-[10px] font-mono uppercase text-[#1F6C9F] dark:text-blue-300">
+                <div className="bg-blue-50/60 border border-blue-200 p-3 rounded-xl">
+                  <div className="text-[10px] font-mono uppercase text-blue-700 font-semibold">
                     MODIFIED CLAUSES
                   </div>
-                  <div className="text-base font-semibold text-[#1F6C9F] dark:text-blue-300 mt-0.5 font-serif">
+                  <div className="text-base font-bold text-blue-700 mt-0.5 font-grotesk">
                     {report.stats.modifiedCount}
                   </div>
                 </div>
@@ -287,15 +287,15 @@ export function ComparisonView({
               <div className="flex items-center justify-between gap-4 pt-1 flex-wrap">
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex items-center gap-1">
-                    <span className="text-[11px] font-mono text-zinc-400 mr-1">Significance:</span>
+                    <span className="text-[11px] font-mono text-slate-500 mr-1">Significance:</span>
                     {(["all", "high", "medium", "low"] as const).map((sig) => (
                       <button
                         key={sig}
                         onClick={() => setFilterSignificance(sig)}
-                        className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider transition-colors ${
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider transition-colors ${
                           filterSignificance === sig
-                            ? "bg-[#16171B] text-white dark:bg-[#F2F1EE] dark:text-[#16171B]"
-                            : "bg-[#FAF8F5] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 hover:bg-zinc-200"
+                            ? "bg-[#2563EB] text-white shadow-xs"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                         }`}
                       >
                         {sig}
@@ -304,15 +304,15 @@ export function ComparisonView({
                   </div>
 
                   <div className="flex items-center gap-1">
-                    <span className="text-[11px] font-mono text-zinc-400 mr-1">Type:</span>
+                    <span className="text-[11px] font-mono text-slate-500 mr-1">Type:</span>
                     {(["all", "added", "removed", "modified"] as const).map((typ) => (
                       <button
                         key={typ}
                         onClick={() => setFilterType(typ)}
-                        className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider transition-colors ${
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider transition-colors ${
                           filterType === typ
-                            ? "bg-[#16171B] text-white dark:bg-[#F2F1EE] dark:text-[#16171B]"
-                            : "bg-[#FAF8F5] text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 hover:bg-zinc-200"
+                            ? "bg-[#2563EB] text-white shadow-xs"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                         }`}
                       >
                         {typ}
@@ -321,7 +321,7 @@ export function ComparisonView({
                   </div>
                 </div>
 
-                <div className="text-[11px] font-mono text-zinc-400">
+                <div className="text-[11px] font-mono text-slate-500">
                   Showing {filteredDifferences.length} of {report.differences.length} changes
                 </div>
               </div>
@@ -331,12 +331,12 @@ export function ComparisonView({
                 {filteredDifferences.map((diff) => (
                   <div
                     key={diff.id}
-                    className="border border-[#E6E2D9] dark:border-[#262A34] rounded-lg bg-white dark:bg-[#14161C] p-4 space-y-2.5 shadow-2xs"
+                    className="border border-slate-200 rounded-xl bg-white p-4 space-y-2.5 shadow-xs"
                   >
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <div className="flex items-center gap-2">
                         {getTypeBadge(diff.type)}
-                        <h4 className="font-semibold text-xs text-zinc-900 dark:text-zinc-100 font-serif">
+                        <h4 className="font-bold text-xs text-slate-900 font-grotesk">
                           {diff.clauseTitle}
                         </h4>
                       </div>
@@ -345,16 +345,16 @@ export function ComparisonView({
                     </div>
 
                     {/* Substantive summary for this clause */}
-                    <div className="text-xs text-zinc-700 dark:text-zinc-300 bg-[#FAF8F5] dark:bg-[#181A22] p-2.5 rounded border border-[#E6E2D9]/80 dark:border-[#282C38]">
-                      <strong className="text-zinc-900 dark:text-zinc-100 font-mono text-[11px]">Material Change:</strong>{" "}
+                    <div className="text-xs text-slate-800 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                      <strong className="text-slate-900 font-mono text-[11px]">Material Change:</strong>{" "}
                       {diff.substantiveChange}
                     </div>
 
                     {/* Side-by-Side Clause Text Comparison */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                       {/* Doc A */}
-                      <div className="border border-[#E6E2D9] dark:border-[#262A34] rounded p-3 bg-[#FAF8F5]/60 dark:bg-zinc-950/40">
-                        <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-1.5">
+                      <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
+                        <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1.5 font-semibold">
                           <span>VERSION A ({report.docAName})</span>
                           {diff.docAClause && (
                             <button
@@ -366,23 +366,23 @@ export function ComparisonView({
                                   diff.docAClause!.content.slice(0, 100)
                                 );
                               }}
-                              className="text-[#8F6E3B] dark:text-[#D8BE96] hover:underline flex items-center gap-0.5"
+                              className="text-[#2563EB] hover:underline flex items-center gap-0.5"
                             >
                               p.{diff.docAClause.pageNumber} <ArrowUpRight className="w-2.5 h-2.5" />
                             </button>
                           )}
                         </div>
 
-                        <div className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed max-h-40 overflow-y-auto font-serif text-[11px] whitespace-pre-wrap">
+                        <div className="text-xs text-slate-800 leading-relaxed max-h-40 overflow-y-auto font-legal-serif text-[12px] whitespace-pre-wrap">
                           {diff.docAClause?.content || (
-                            <span className="italic text-zinc-400 font-sans">Clause does not exist in Version A</span>
+                            <span className="italic text-slate-400 font-sans">Clause does not exist in Version A</span>
                           )}
                         </div>
                       </div>
 
                       {/* Doc B */}
-                      <div className="border border-[#E6E2D9] dark:border-[#262A34] rounded p-3 bg-[#FAF8F5]/60 dark:bg-zinc-950/40">
-                        <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-1.5">
+                      <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
+                        <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1.5 font-semibold">
                           <span>VERSION B ({report.docBName})</span>
                           {diff.docBClause && (
                             <button
@@ -394,16 +394,16 @@ export function ComparisonView({
                                   diff.docBClause!.content.slice(0, 100)
                                 );
                               }}
-                              className="text-[#8F6E3B] dark:text-[#D8BE96] hover:underline flex items-center gap-0.5"
+                              className="text-[#2563EB] hover:underline flex items-center gap-0.5"
                             >
                               p.{diff.docBClause.pageNumber} <ArrowUpRight className="w-2.5 h-2.5" />
                             </button>
                           )}
                         </div>
 
-                        <div className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed max-h-40 overflow-y-auto font-serif text-[11px] whitespace-pre-wrap">
+                        <div className="text-xs text-slate-800 leading-relaxed max-h-40 overflow-y-auto font-legal-serif text-[12px] whitespace-pre-wrap">
                           {diff.docBClause?.content || (
-                            <span className="italic text-zinc-400 font-sans">Clause does not exist in Version B</span>
+                            <span className="italic text-slate-400 font-sans">Clause does not exist in Version B</span>
                           )}
                         </div>
                       </div>

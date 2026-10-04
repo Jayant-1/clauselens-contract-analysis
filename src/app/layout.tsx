@@ -1,21 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "ClauseLens - Verified Legal Contract Analysis",
+  title: "ClauseLens - Legal Contract Diligence",
   description:
-    "Desktop-first evidence-grounded legal contract analysis web application with verified citations, interactive document highlighting, and clause-level comparison.",
+    "Grounded legal contract intelligence with verified citations and substantive clause comparison.",
+  icons: {
+    icon: [
+      { url: "/untitled-ui-icon.png", sizes: "256x256", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: "/untitled-ui-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -24,11 +20,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="h-full overflow-hidden bg-[#FAFAF9] dark:bg-[#0D0D0E] text-zinc-900 dark:text-zinc-100 antialiased selection:bg-zinc-200 selection:text-zinc-900 dark:selection:bg-zinc-800 dark:selection:text-zinc-100">
+    <html lang="en" className="h-full antialiased light" style={{ colorScheme: "light" }}>
+      <head>
+        <link rel="icon" type="image/png" sizes="256x256" href="/untitled-ui-icon.png" />
+        <link rel="apple-touch-icon" href="/untitled-ui-icon.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="h-full overflow-hidden bg-[#FAFAF8] text-[#18181B] antialiased selection:bg-blue-100 selection:text-blue-900">
         {children}
       </body>
     </html>

@@ -52,3 +52,8 @@ next-env.d.ts
 # impeccable local overrides & cache
 .impeccable/config.local.json
 .impeccable/*.cache.json
+
+# python cache & test artifacts
+__pycache__/
+*.pyc
+.playwright-mcp/

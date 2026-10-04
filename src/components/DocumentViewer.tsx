@@ -31,6 +31,7 @@ interface DocumentViewerProps {
   onClearHighlight: () => void;
   onCloseViewer?: () => void;
   onBackToChatMobile?: () => void;
+  viewMode?: "split" | "chat" | "document";
 }
 
 export function DocumentViewer({
@@ -39,6 +40,7 @@ export function DocumentViewer({
   onClearHighlight,
   onCloseViewer,
   onBackToChatMobile,
+  viewMode = "split",
 }: DocumentViewerProps) {
   const [selectedPage, setSelectedPage] = useState<number | null>(null);
   const [zoomLevel, setZoomLevel] = useState(100);
@@ -130,18 +132,16 @@ export function DocumentViewer({
       paragraphs.forEach((p) => {
         p.classList.remove(
           "ring-2",
-          "ring-[#C5A880]",
-          "bg-[#C5A880]/20",
-          "dark:bg-[#C5A880]/30",
+          "ring-blue-500",
+          "bg-blue-100/70",
           "transition-all"
         );
         const text = p.textContent?.toLowerCase() || "";
         if (text.includes(cleanQuote) || cleanQuote.includes(text.slice(0, 40))) {
           p.classList.add(
             "ring-2",
-            "ring-[#C5A880]",
-            "bg-[#C5A880]/20",
-            "dark:bg-[#C5A880]/30",
+            "ring-blue-500",
+            "bg-blue-100/70",
             "transition-all",
             "duration-300",
             "rounded",
@@ -158,15 +158,15 @@ export function DocumentViewer({
 
   if (!document) {
     return (
-      <div className="w-full lg:w-[48%] hidden lg:flex flex-col items-center justify-center h-full bg-[#FAF8F5] dark:bg-[#0C0D10] text-zinc-400 p-8 text-center border-l border-[#E6E2D9] dark:border-[#242730]">
-        <div className="w-12 h-12 rounded-xl bg-white dark:bg-zinc-850 flex items-center justify-center mb-3 shadow-xs text-zinc-400 border border-[#E6E2D9] dark:border-[#2C303B]">
+      <div className="w-full h-full flex flex-col items-center justify-center bg-[#FAFAF8] text-zinc-400 p-8 text-center">
+        <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center mb-3 shadow-xs text-[#1E3A8A] border border-[#E5E5E2]">
           <FileText className="w-6 h-6" />
         </div>
-        <h3 className="text-xs font-semibold uppercase tracking-wider font-mono text-zinc-700 dark:text-zinc-300">
-          Split Document Viewer
+        <h3 className="font-editorial text-sm font-semibold text-zinc-700">
+          Document Reader
         </h3>
-        <p className="text-xs text-zinc-400 dark:text-zinc-500 max-w-xs mt-1 leading-relaxed">
-          Open a contract from the library or click &ldquo;Open&rdquo; on any verified evidence quote to inspect synchronized text.
+        <p className="text-xs text-zinc-500 max-w-xs mt-1 leading-relaxed font-sans">
+          Select an agreement from the portfolio or click &ldquo;Inspect&rdquo; on any verified evidence quote to read synchronized text.
         </p>
       </div>
     );
@@ -196,7 +196,7 @@ export function DocumentViewer({
       parts.push(
         <mark
           key={`hl_${idx}`}
-          className="bg-[#C5A880]/30 dark:bg-[#C5A880]/40 text-zinc-950 dark:text-white px-1.5 py-0.5 rounded ring-2 ring-[#C5A880] font-serif shadow-xs"
+          className="bg-blue-100 text-blue-950 px-1.5 py-0.5 rounded ring-1 ring-blue-400 font-editorial shadow-2xs"
         >
           {text.slice(idx, idx + cleanTarget.length)}
         </mark>
@@ -208,22 +208,16 @@ export function DocumentViewer({
   };
 
   return (
-    <div className="w-full flex flex-col h-full bg-[#FAF8F5] dark:bg-[#0F1116] overflow-hidden relative">
+    <div className="w-full flex flex-col h-full bg-[#FAFAF8] overflow-hidden relative text-zinc-900 font-sans">
       {/* Top Controls Toolbar */}
-      <header className="px-4 py-2.5 bg-white/95 dark:bg-[#111216]/95 backdrop-blur-md border-b border-[#E6E2D9] dark:border-[#242730] flex items-center justify-between shrink-0 z-10">
-        <div className="flex items-center gap-2 min-w-0">
-          <span
-            className={`text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded shrink-0 ${
-              document.fileType === "pdf"
-                ? "bg-[#FDF0F0] text-[#A82E2E] dark:bg-red-950/40 dark:text-red-300"
-                : "bg-[#EBF5FA] text-[#1F6C9F] dark:bg-blue-950/40 dark:text-blue-300"
-            }`}
-          >
-            {document.fileType.toUpperCase()}
+      <header className="px-4 lg:px-6 py-3 bg-white border-b border-[#E5E5E2] flex items-center justify-between shrink-0 z-10">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-zinc-100 text-zinc-700 border border-[#E5E5E2] uppercase shrink-0">
+            {document.fileType}
           </span>
 
           <span
-            className="text-xs font-medium text-zinc-900 dark:text-zinc-100 truncate font-serif"
+            className="font-editorial text-sm font-semibold text-zinc-900 truncate"
             title={document.name}
           >
             {document.name}
@@ -233,57 +227,57 @@ export function DocumentViewer({
         {/* Page navigation and zoom */}
         <div className="flex items-center gap-1.5">
           {document.pageCount > 1 && (
-            <div className="flex items-center gap-0.5 bg-[#FAF8F5] dark:bg-[#1A1D24] border border-[#E6E2D9] dark:border-[#2C303B] rounded-md p-0.5 text-xs text-zinc-700 dark:text-zinc-300">
+            <div className="flex items-center gap-0.5 bg-[#FAFAF8] border border-[#E5E5E2] rounded-lg p-0.5 text-xs text-zinc-700">
               <button
                 disabled={currentPage <= 1}
                 onClick={() => setSelectedPage(Math.max(1, currentPage - 1))}
-                className="p-1 hover:bg-white dark:hover:bg-zinc-700 rounded disabled:opacity-30 transition-colors"
+                className="p-1 hover:bg-white rounded disabled:opacity-30 transition-colors"
                 title="Previous page"
               >
-                <ChevronLeft className="w-3 h-3" />
+                <ChevronLeft className="w-3.5 h-3.5" />
               </button>
 
-              <span className="px-1 text-[10px] font-mono">
+              <span className="px-1.5 text-[11px] font-mono">
                 {currentPage} / {document.pageCount}
               </span>
 
               <button
                 disabled={currentPage >= document.pageCount}
                 onClick={() => setSelectedPage(Math.min(document.pageCount, currentPage + 1))}
-                className="p-1 hover:bg-white dark:hover:bg-zinc-700 rounded disabled:opacity-30 transition-colors"
+                className="p-1 hover:bg-white rounded disabled:opacity-30 transition-colors"
                 title="Next page"
               >
-                <ChevronRight className="w-3 h-3" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           )}
 
           {/* Zoom controls */}
-          <div className="flex items-center gap-0.5 bg-[#FAF8F5] dark:bg-[#1A1D24] border border-[#E6E2D9] dark:border-[#2C303B] rounded-md p-0.5 text-xs text-zinc-700 dark:text-zinc-300">
+          <div className="flex items-center gap-0.5 bg-[#FAFAF8] border border-[#E5E5E2] rounded-lg p-0.5 text-xs text-zinc-700">
             <button
               onClick={() => setZoomLevel((z) => Math.max(60, z - 15))}
-              className="p-1 hover:bg-white dark:hover:bg-zinc-700 rounded transition-colors"
+              className="p-1 hover:bg-white rounded transition-colors"
               title="Zoom out"
             >
-              <ZoomOut className="w-3 h-3" />
+              <ZoomOut className="w-3.5 h-3.5" />
             </button>
-            <span className="px-1 text-[10px] font-mono">{zoomLevel}%</span>
+            <span className="px-1 text-[11px] font-mono">{zoomLevel}%</span>
             <button
               onClick={() => setZoomLevel((z) => Math.min(180, z + 15))}
-              className="p-1 hover:bg-white dark:hover:bg-zinc-700 rounded transition-colors"
+              className="p-1 hover:bg-white rounded transition-colors"
               title="Zoom in"
             >
-              <ZoomIn className="w-3 h-3" />
+              <ZoomIn className="w-3.5 h-3.5" />
             </button>
           </div>
 
           {onCloseViewer && (
             <button
               onClick={onCloseViewer}
-              className="p-1 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+              className="p-1 text-zinc-400 hover:text-zinc-700 transition-colors rounded-lg hover:bg-[#FAFAF8]"
               title="Close viewer"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
@@ -296,18 +290,18 @@ export function DocumentViewer({
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="bg-[#C5A880]/15 dark:bg-[#C5A880]/20 border-b border-[#C5A880]/40 px-4 py-2 flex items-center justify-between text-xs text-[#8F6E3B] dark:text-[#D8BE96] z-10"
+            className="bg-blue-50/80 border-b border-blue-200 px-4 lg:px-6 py-2 flex items-center justify-between text-xs text-blue-900 z-10"
           >
             <div className="flex items-center gap-2 truncate">
-              <Highlighter className="w-3.5 h-3.5 shrink-0 text-[#C5A880]" />
-              <span className="truncate text-[11px]">
-                <strong>Citation highlight active:</strong> Page {activeHighlight.pageNumber} &ldquo;{activeHighlight.quote.slice(0, 50)}...&rdquo;
+              <Highlighter className="w-3.5 h-3.5 shrink-0 text-[#1E3A8A]" />
+              <span className="truncate text-xs">
+                <strong>Citation highlight:</strong> Page {activeHighlight.pageNumber} &ldquo;{activeHighlight.quote.slice(0, 60)}...&rdquo;
               </span>
             </div>
 
             <button
               onClick={onClearHighlight}
-              className="text-[10px] font-mono font-bold hover:underline ml-2 shrink-0 bg-white/60 dark:bg-black/40 px-2 py-0.5 rounded"
+              className="text-[11px] font-mono font-medium hover:underline ml-2 shrink-0 bg-white border border-blue-200 text-[#1E3A8A] px-2 py-0.5 rounded shadow-2xs"
               title="Clear highlight"
             >
               Clear
@@ -319,24 +313,26 @@ export function DocumentViewer({
       {/* Main Document Content Area */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto p-4 lg:p-6 flex flex-col items-center scrollbar-thin"
+        className="flex-1 overflow-y-auto p-4 lg:p-8 flex flex-col items-center scrollbar-thin bg-[#FAFAF8]"
       >
         {document.fileType === "pdf" ? (
           <div className="w-full flex flex-col items-center space-y-4">
             {/* Visual Canvas */}
-            <div className="bg-white dark:bg-[#14161C] rounded-sm border border-[#E6E2D9] dark:border-[#262A34] overflow-hidden relative shadow-xs">
+            <div className="bg-white rounded-lg border border-[#E5E5E2] overflow-hidden relative shadow-xs">
               <canvas ref={canvasRef} className="max-w-full h-auto block" />
             </div>
 
             {/* Synchronized Exact Text Layer with Interactive Highlighting */}
             <div
               style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: "top center" }}
-              className="w-full max-w-2xl parchment-sheet rounded-xl p-6 lg:p-8 font-serif text-xs leading-relaxed text-zinc-800 dark:text-zinc-200 whitespace-pre-wrap select-text"
+              className={`w-full ${
+                viewMode === "document" ? "max-w-4xl" : "max-w-2xl"
+              } bg-white rounded-xl border border-[#E5E5E2] shadow-xs p-6 lg:p-10 font-editorial text-sm leading-relaxed text-zinc-800 whitespace-pre-wrap select-text`}
             >
-              <div className="border-b border-[#E6E2D9]/70 dark:border-[#262A34] pb-2 mb-4 flex items-center justify-between font-mono text-[10px] text-zinc-400">
-                <span className="flex items-center gap-1.5 font-semibold text-[#8F6E3B] dark:text-[#D8BE96]">
-                  <Sparkles className="w-3.5 h-3.5 text-[#C5A880]" />
-                  DOCUMENT SYNCHRONIZED TEXT LAYER (PAGE {currentPage})
+              <div className="border-b border-[#E5E5E2] pb-2 mb-4 flex items-center justify-between font-mono text-[10px] text-zinc-400">
+                <span className="flex items-center gap-1.5 font-medium text-[#1E3A8A]">
+                  <Sparkles className="w-3.5 h-3.5 text-[#1E3A8A]" />
+                  SYNCHRONIZED CLAUSE LAYER · PAGE {currentPage}
                 </span>
                 <span>{currentPageData?.text.length || 0} characters</span>
               </div>
@@ -351,7 +347,9 @@ export function DocumentViewer({
           <div
             ref={docxContentRef}
             style={{ transform: `scale(${zoomLevel / 100})`, transformOrigin: "top center" }}
-            className="w-full max-w-2xl parchment-sheet rounded-xl p-6 lg:p-8 text-xs leading-relaxed text-zinc-800 dark:text-zinc-200 select-text prose dark:prose-invert max-w-none font-serif"
+            className={`w-full ${
+              viewMode === "document" ? "max-w-4xl" : "max-w-2xl"
+            } bg-white rounded-xl border border-[#E5E5E2] shadow-xs p-6 lg:p-10 text-sm leading-relaxed text-zinc-800 select-text font-editorial`}
             dangerouslySetInnerHTML={{
               __html: document.htmlContent || `<pre>${document.extractedText || ""}</pre>`,
             }}
@@ -369,7 +367,7 @@ export function DocumentViewer({
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={onBackToChatMobile}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#16171B] dark:bg-[#F2F1EE] text-white dark:text-[#16171B] rounded-full shadow-lg text-xs font-medium"
+            className="flex items-center gap-1.5 px-4 py-2 bg-[#1E3A8A] hover:bg-[#172554] text-white rounded-full shadow-lg text-xs font-medium"
           >
             <MessageSquare className="w-3.5 h-3.5" />
             <span>Return to Inquiry</span>

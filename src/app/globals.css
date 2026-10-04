@@ -1,114 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #fbf9f6;
-  --foreground: #141518;
+  /* Nordic Paper & Ink: Warm Alabaster + Deep Sumi Ink + Prussian Navy */
+  --background: #fafaf8;
+  --foreground: #18181b;
+  
   --surface: #ffffff;
-  --surface-raised: #f7f4ed;
-  --surface-muted: #f0ebe0;
-  --border-subtle: rgba(197, 168, 128, 0.22);
-  --border-strong: rgba(197, 168, 128, 0.45);
-  --muted: #6e6b65;
-  --accent-gold: #c5a880;
-  --accent-gold-hover: #b39266;
-  --accent-gold-deep: #85612c;
-  --accent-gold-light: #f7f2e8;
-  --verified-bg: #edf8f1;
-  --verified-border: #a7e4bc;
-  --verified-text: #1b663b;
-  --unverified-bg: #fef8eb;
-  --unverified-border: #f8dfaa;
-  --unverified-text: #96610b;
-  --diff-red-bg: #fdf2f2;
-  --diff-red-text: #a82e2e;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #08090b;
-    --foreground: #f4f3f0;
-    --surface: #101216;
-    --surface-raised: #151820;
-    --surface-muted: #1c202a;
-    --border-subtle: rgba(216, 190, 150, 0.15);
-    --border-strong: rgba(216, 190, 150, 0.3);
-    --muted: #9598a2;
-    --accent-gold: #d8be96;
-    --accent-gold-hover: #e8d2b0;
-    --accent-gold-deep: #f2dec4;
-    --accent-gold-light: #1f1b13;
-    --verified-bg: rgba(27, 102, 59, 0.25);
-    --verified-border: rgba(134, 239, 172, 0.35);
-    --verified-text: #86efac;
-    --unverified-bg: rgba(150, 97, 11, 0.25);
-    --unverified-border: rgba(253, 224, 71, 0.35);
-    --unverified-text: #fde047;
-    --diff-red-bg: rgba(168, 46, 46, 0.25);
-    --diff-red-text: #fca5a5;
-  }
+  --surface-subtle: #f4f4f0;
+  --surface-hover: #f8f8f5;
+  
+  --border: #e5e5e2;
+  --border-subtle: #efefec;
+  --border-focus: #1e3a8a;
+  
+  --muted: #71717a;
+  --muted-subtle: #a1a1aa;
+  
+  /* Prussian Navy Accent */
+  --accent-navy: #1e3a8a;
+  --accent-navy-hover: #172554;
+  --accent-blue: #2563eb;
+  --accent-blue-subtle: #eff6ff;
+  
+  /* Warm Sage for Verified Citations */
+  --sage-bg: #f0fdf4;
+  --sage-border: #bbf7d0;
+  --sage-text: #15803d;
+  
+  /* Alert / Exposure Red */
+  --risk-red-bg: #fef2f2;
+  --risk-red-border: #fecaca;
+  --risk-red-text: #dc2626;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  letter-spacing: -0.014em;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Luxury ambient background lighting */
-.luxury-ambient-mesh {
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(197, 168, 128, 0.08), transparent 45%),
-    radial-gradient(circle at 100% 100%, rgba(197, 168, 128, 0.05), transparent 40%);
+/* Nordic Canvas & Surfaces */
+.nordic-canvas {
+  background-color: #fafaf8;
 }
 
-@media (prefers-color-scheme: dark) {
-  .luxury-ambient-mesh {
-    background-image: 
-      radial-gradient(circle at 50% -10%, rgba(216, 190, 150, 0.1), transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(216, 190, 150, 0.04), transparent 40%);
-  }
+.nordic-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e2;
+  box-shadow: 0 1px 3px rgba(24, 24, 27, 0.02);
 }
 
-/* Subtle architectural grid lines for legal workspace credibility */
-.subtle-legal-grid {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(197, 168, 128, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(197, 168, 128, 0.04) 1px, transparent 1px);
+.nordic-sheet {
+  background: #ffffff;
+  border: 1px solid #e5e5e2;
+  box-shadow: 0 4px 24px -2px rgba(24, 24, 27, 0.04);
 }
 
-@media (prefers-color-scheme: dark) {
-  .subtle-legal-grid {
-    background-image: 
-      linear-gradient(to right, rgba(216, 190, 150, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(216, 190, 150, 0.03) 1px, transparent 1px);
-  }
+/* Editorial Typography */
+.font-editorial {
+  font-family: 'Newsreader', Georgia, Cambria, serif;
 }
 
-/* Double-bezel hardware styling (Outer shell + Inner core) */
-.double-bezel {
-  border: 1px solid var(--border-subtle);
-  background: var(--surface);
-  box-shadow: 
-    0 1px 2px rgba(0, 0, 0, 0.03),
-    inset 0 1px 0.5px rgba(255, 255, 255, 0.6);
-}
-
-@media (prefers-color-scheme: dark) {
-  .double-bezel {
-    box-shadow: 
-      0 4px 20px rgba(0, 0, 0, 0.5),
-      inset 0 1px 0.5px rgba(255, 255, 255, 0.07);
-  }
-}
-
-/* Custom scrollbars */
+/* Minimalist Scrollbars */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -116,77 +76,10 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d4cfc5;
+  background: #d4d4d0;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b5ada0;
-}
-
-@media (prefers-color-scheme: dark) {
-  ::-webkit-scrollbar-thumb {
-    background: #272a34;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #3c4252;
-  }
-}
-
-/* Glass floating command island */
-.glass-floating-island {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-subtle);
-  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-@media (prefers-color-scheme: dark) {
-  .glass-floating-island {
-    background: rgba(16, 18, 22, 0.85);
-    border: 1px solid var(--border-subtle);
-    box-shadow: 0 12px 40px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  }
-}
-
-/* Legal Memorandum Paper Texture */
-.legal-memo-paper {
-  background-image: radial-gradient(circle at 100% 0%, rgba(197, 168, 128, 0.03), transparent 60%);
-}
-
-@media (prefers-color-scheme: dark) {
-  .legal-memo-paper {
-    background-image: radial-gradient(circle at 100% 0%, rgba(216, 190, 150, 0.03), transparent 60%);
-  }
-}
-
-/* Atelier Slate Container - Docked Hardware Slates */
-.atelier-slate {
-  background: var(--surface);
-  border: 1px solid var(--border-subtle);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
-}
-
-@media (prefers-color-scheme: dark) {
-  .atelier-slate {
-    background: #0f1117;
-    border: 1px solid rgba(216, 190, 150, 0.12);
-    box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  }
-}
-
-/* Legal Parchment Sheet */
-.parchment-sheet {
-  background: #ffffff;
-  border: 1px solid #e8e3d8;
-  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
-}
-
-@media (prefers-color-scheme: dark) {
-  .parchment-sheet {
-    background: #13151c;
-    border: 1px solid #232734;
-    box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  }
+  background: #a8a8a2;
 }

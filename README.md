@@ -6,39 +6,37 @@ ClauseLens is a production-grade, evidence-grounded legal contract analysis web 
 
 ## Key Features
 
-1. **Evidence-Grounded Q&A with Independent Quote Verification**
+1. **Evidence-Grounded Q&A with Strict Quote Verification (Non-Negotiable Rule)**
    - Answers are strictly grounded in contract evidence.
-   - Every citation undergoes independent multi-pass verification against the document's original text, rejecting hallucinations or paraphrases.
-   - Quotes spanning multiple lines and page boundaries are matched with token-level precision.
-   - If no verified evidence supports an answer, ClauseLens explicitly reports: *"I could not find this in the selected document(s)."*
+   - **Non-Negotiable Safety Rule**: Quotes must strictly support the factual claim made. If evidence is unsupported or absent, ClauseLens explicitly returns:
+     > *"I could not find a supported answer in the selected document(s)."*
+   - Candidate citations undergo multi-pass verification against original document text, checking claimed section and chunk boundaries before falling back to full-page search.
+   - Normalization engine accommodates typographic smart quotes (`’`, `“`), en/em dashes (`—`, `–`), and multi-line breaks without allowing semantic drift or false cross-clause matches.
 
 2. **Split Document Viewer with Interactive Citation Highlighting**
-   - Clicking *"Open source"* on any verified citation automatically scrolls the viewer to the exact page and paragraph.
-   - High-contrast, pulsating amber highlights pinpoint the exact quoted passage.
-   - Visual PDF.js rendering with a synchronized text layer.
-   - Rich DOCX preview with embedded paragraph anchor IDs.
+   - Clicking *"Open source"* on any verified citation jumps to the exact document, scrolls to the target page, and pulses an animated amber highlight over the quoted text.
+   - High-fidelity PDF rendering with synchronized text layer via PDF.js.
+   - Rich DOCX preview with embedded paragraph anchor IDs generated via Mammoth.
 
-3. **Part C — Agentic Document Research (Option 2)**
-   - Autonomous multi-round research loop (up to 6 rounds).
-   - Real tool execution:
-     - `search_document({ query, documentIds })` — BM25 lexical chunk retrieval with clause boosting.
-     - `get_section({ documentId, sectionId })` — verbatim clause extraction.
-     - `list_clauses({ documentId })` — document structural inspection.
-   - Live activity events streamed to the UI (*"Searching termination provisions..."*, *"Reading Section 4..."*, *"Comparing clauses across 2 documents..."*).
-   - Safe input validation with Zod; safely recovers from malformed tool calls without crashing.
+3. **Autonomous Agentic Diligence Engine (Part C: Option 2)**
+   - Multi-round research loop (up to 6 rounds) using real tool execution:
+     - `search_document({ query, documentIds })` — BM25 lexical chunk retrieval with 6.0x section header boosting and legal synonym expansion.
+     - `get_section({ documentId, sectionId })` — verbatim clause extraction by section.
+     - `list_clauses({ documentId })` — structural inspection of contract headings.
+   - Live activity events streamed via Server-Sent Events (SSE) (*"Searching for liability cap..."*, *"Reading Section 4..."*, *"Comparing clauses across 2 documents..."*).
+   - Strict Zod schema validation (`StructuredAnswerSchema`, `SearchDocumentSchema`, etc.) preventing malformed tool invocations from crashing the process.
+   - High-confidence deterministic fallback engine when no AI API key is configured, extracting exact figures and verbatim clauses without hallucination.
 
 4. **Clause-Level Contract Comparison & Material Change Analysis**
-   - Compares two uploaded contract versions (e.g., v1 vs. v2) at clause and paragraph level.
-   - Detects added, removed, and modified clauses.
-   - Extracts and compares material values: liability caps, notice periods, and governing law jurisdictions.
-   - Automatically assigns significance levels (**High**, **Medium**, **Low**).
-   - Generates an executive substantive changes summary and allows clicking through to each document's page.
+   - Side-by-side contract diffing detecting Added, Removed, and Modified clauses.
+   - Automated material value extraction: liability caps, termination notice periods, and governing law jurisdictions.
+   - Significance categorization (**High**, **Medium**, **Low**) with dual filtering and direct navigation to document pages.
 
 5. **Large-Document Strategy (150+ Page Contracts)**
-   - Clause-aware chunking engine detects legal headings (`Section`, `Article`, `Clause`, Roman numerals, all-caps headers).
-   - Stable chunk IDs persisted in SQLite via Prisma.
-   - High-performance lexical retrieval powered by MiniSearch with BM25-style scoring and fuzzy tolerance.
-   - Never loads the entire contract into the LLM context at once.
+   - Section-bound chunking engine detects legal headings (`Section`, `Article`, `Clause`, Roman numerals, all-caps headers).
+   - Flushes chunks immediately when a new section heading is encountered, completely eliminating cross-section overlap bleeding.
+   - Lexical retrieval powered by MiniSearch with BM25-style scoring, query noise filtering, and 6.0x section header weighting.
+   - Memory and context window protection: entire contracts are never dumped into LLM prompts.
 
 6. **Desktop-First Professional UI/UX**
    - Left sidebar with contract library, upload dropzone, progress tracking, and cascade deletion.
@@ -89,13 +87,13 @@ ClauseLens is a production-grade, evidence-grounded legal contract analysis web 
 
 ### Prerequisites
 - Node.js 20+ or 22+ (tested on Node v22.18.0)
-- npm 10+ or 11+
+- `pnpm` 9+ or 10+ (exclusive package manager)
 
 ### 1. Clone & Install Dependencies
 ```bash
 git clone <your-repo-url> clauselens
 cd clauselens
-npm install
+pnpm install
 ```
 
 ### 2. Configure Environment Variables
@@ -117,21 +115,16 @@ AI_BASE_URL="https://api.openai.com/v1"
 AI_MODEL="gpt-4o-mini"
 ```
 
-> **Note on AI Configuration**: ClauseLens works with any OpenAI-compatible provider (OpenAI, OpenRouter, Groq, Ollama, vLLM). If `AI_API_KEY` is not provided, ClauseLens operates in **deterministic autonomous mode**, executing real multi-round tool research over retrieved contract evidence without crashing or inventing text.
+> **Note on AI Configuration**: ClauseLens works with any OpenAI-compatible provider (OpenAI, OpenRouter, Groq, Ollama, vLLM). If `AI_API_KEY` is not provided, ClauseLens operates in **deterministic autonomous mode**, executing real multi-round tool research over retrieved contract evidence without crashing, hallucinating, or emitting unsupported quotes.
 
 ### 3. Initialize the SQLite Database
 ```bash
-npx prisma db push
+pnpm exec prisma db push
 ```
 
-### 4. Generate Fixtures (Optional, for testing)
+### 4. Start Development Server
 ```bash
-npx tsx scripts/generate-fixtures.ts
-```
-
-### 5. Start Development Server
-```bash
-npm run dev
+pnpm dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
@@ -139,29 +132,29 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Test Suite Execution
 
-Run all 35 unit, integration, and end-to-end tests:
+Run all 63 unit, acceptance, and end-to-end tests:
 ```bash
-npm test
+pnpm test
 ```
 
 To run tests with watch mode:
 ```bash
-npm run test:watch
+pnpm test:watch
 ```
 
 Run TypeScript strict type checking:
 ```bash
-npx tsc --noEmit
+pnpm exec tsc --noEmit
 ```
 
 Run ESLint:
 ```bash
-npm run lint
+pnpm run lint
 ```
 
 Run production build:
 ```bash
-npm run build
+pnpm build
 ```
 
 ---
@@ -170,42 +163,44 @@ npm run build
 
 ClauseLens does **not** trust page numbers or character offsets reported by language models. Instead, it routes candidate citations through an independent verification pipeline (`src/lib/normalization.ts`):
 
-1. **Character & Unicode Normalization**:
+1. **Claimed Boundary Validation**:
+   - The pipeline checks candidate quotes against the specific `claimedDocumentId`, `claimedChunkId`, and `claimedSectionTitle`.
+   - Prevents quotes from one clause (such as Section 3 termination notices) from being verified under another (such as Section 4 limitation of liability).
+
+2. **Character & Unicode Normalization**:
    - Smart single/double quotes (`’`, `‘`, `“`, `”`, `«`, `»`) $\rightarrow$ ASCII quotes (`'`, `"`).
    - Em dashes, en dashes, minus signs (`—`, `–`, `−`) $\rightarrow$ standardized hyphen delimiters (` - `).
    - Non-breaking spaces and zero-width spaces $\rightarrow$ single space.
    - Whitespace collapse ($\backslash$r, $\backslash$n, tabs, multiple spaces $\rightarrow$ single space) and lowercasing.
 
-2. **Multi-Pass Page Search**:
-   - **Pass 1 (Direct Page Substring)**: Searches page-by-page for verbatim matches.
-   - **Pass 2 (Normalized Token Search)**: Compares normalized token sequences, accommodating minor formatting or typographical differences.
-   - **Pass 3 (Cross-Page Boundary Search)**: Matches quotes spanning page breaks (e.g., when a sentence begins at the bottom of Page 1 and concludes on Page 2).
-   - **Pass 4 (Global Document Search)**: Full document fallback.
+3. **Multi-Pass Search Hierarchy**:
+   - **Pass 1 (Claimed Section/Chunk Search)**: Validates whether the quote resides inside the claimed chunk/section.
+   - **Pass 2 (Direct Page Substring)**: Searches page-by-page for verbatim matches.
+   - **Pass 3 (Normalized Token Search)**: Compares normalized token sequences, accommodating minor line-wrap formatting differences.
+   - **Pass 4 (Cross-Page Boundary Search)**: Matches quotes spanning page transitions.
 
-3. **Disambiguation & Occurrence Tracking**:
+4. **Disambiguation & Occurrence Tracking**:
    - If a quote appears multiple times, ClauseLens calculates proximity to the preferred chunk/page from retrieval.
    - Returns occurrence counts (`occurrencesCount`) so users know if a clause repeated elsewhere.
 
-4. **Rejection & Labelling**:
-   - Fabricated or hallucinated quotes fail verification (`isVerified: false`) and are either filtered out or tagged with an orange **UNVERIFIED** alert badge.
-
-### Known Limitations
-- Severely degraded scanned PDFs without OCR readable text cannot be matched and are rejected at upload.
-- Mathematical equations or complex nested ASCII tables may require token-level approximation if table column borders disrupt standard sentence flow.
+5. **Rejection & Labelling**:
+   - Fabricated or cross-clause mismatched quotes fail verification (`isVerified: false`) and are omitted or tagged with an orange **UNVERIFIED** alert badge.
 
 ---
 
 ## Large-Document Strategy (150+ Page Contracts)
 
-1. **Clause-Aware Chunking**:
-   - Legal documents are chunked by clause headings (`Section`, `Article`, `Clause`, Roman numerals) rather than arbitrary token cuts.
-   - Target chunk size is 800–1200 characters with 150-character overlaps.
-   - Every chunk is assigned a stable ID (`${docId}_chunk_${index}`), page number, and section title.
+1. **Section-Bound Chunking**:
+   - Legal documents are chunked by clause headings (`Section`, `Article`, `Clause`, Roman numerals, all-caps titles).
+   - Whenever a new clause heading is encountered, previous chunk buffers are flushed immediately without prepending prior text. This eliminates cross-section overlap bleeding.
+   - Every chunk is assigned a stable ID (`${docId}_chunk_${index}`), page number, and section title in SQLite.
 2. **Context Window Protection**:
    - The full document is never sent to the model.
-   - Retrieval pulls the top $k$ relevant chunks (filtered by selected documents), keeping prompt sizes bounded.
-3. **Lexical BM25 Retrieval**:
-   - Powered by MiniSearch with field weighting (2.5x boost for `sectionTitle`, fuzzy match tolerance for typos).
+   - Retrieval pulls the top $k$ relevant chunks independently for each selected document, preventing single-contract dominance.
+3. **Lexical BM25 Retrieval & Query Normalization**:
+   - Powered by MiniSearch with **6.0x boost for `sectionTitle`**.
+   - Removes conversational noise tokens (`"what"`, `"is"`, `"the"`, `"quote"`, `"contractual"`, `"wording"`, `"compare"`, `"two"`, `"contracts"`).
+   - Expands queries using domain-specific legal synonym dictionaries (liability $\rightarrow$ aggregate liability, damages cap; termination $\rightarrow$ notice, convenience, cure period; governing law $\rightarrow$ jurisdiction, laws of).
 
 ---
 
@@ -222,13 +217,14 @@ Option 2 was chosen because legal contract analysis inherently requires multi-ho
 - Maximum 6 research rounds.
 - Strict input validation via Zod schemas (`SearchDocumentSchema`, `GetSectionSchema`, `ListClausesSchema`).
 - Graceful recovery: invalid JSON or malformed arguments return helpful error messages to the model instead of crashing the server.
-- Visible activity events streamed via Server-Sent Events (SSE).
+- High-confidence deterministic fallback engine when no AI key is provided, generating grounded answers and exact quotes.
+- Live activity events streamed via Server-Sent Events (SSE).
 
 ### Hardest Challenge
 The hardest challenge was ensuring that the agentic loop remains grounded and terminates gracefully when a provision does not exist. Language models tend to continue looping or hallucinating when an answer is absent. This was addressed by:
 - Setting a hard limit of 6 rounds.
-- Providing explicit negative constraints in the system prompt.
-- Enforcing the mandatory fallback: *"I could not find this in the selected document(s)."*
+- Enforcing the non-negotiable safety rule: *"I could not find a supported answer in the selected document(s)."*
+- Rejecting answers with unrelated or fabricated citations.
 
 ---
 
@@ -284,26 +280,40 @@ The hardest challenge was ensuring that the agentic loop remains grounded and te
 
 ## Concise Demo Script (3–5 Minutes)
 
-1. **Upload Document (0:00 - 0:45)**:
-   - Drag and drop `sample_contract.pdf` into the left sidebar dropzone.
-   - Observe progress indicator transitioning through *"Uploading..."*, *"Extracting clauses..."*, and *"Ready!"*.
-   - Try dropping an invalid file (`contract.exe` or `scanned_sample.pdf`) to show the graceful rejection banner.
-2. **Ask Question & Streaming (0:45 - 1:30)**:
-   - Click a suggestion: *"What is the limitation of liability cap?"*.
-   - Watch the agentic activity stream display live research rounds (*"Searching for..."*, *"Reading Section 4..."*).
-   - Watch the answer stream token-by-token.
-3. **Show Verified Quote (1:30 - 2:00)**:
-   - Point out the green **VERIFIED QUOTE** badge on the citation card.
-   - Note the document name, page number, and exact quoted clause.
-4. **Click Quote & Show Highlight (2:00 - 2:45)**:
-   - Click *"Open source"* on the citation.
-   - The right-hand viewer opens the contract, jumps to Page 1, and pulses the amber highlight over the exact clause.
-5. **Compare Two Documents (2:45 - 3:30)**:
-   - Upload `saas_agreement_v1.docx` and `saas_agreement_v2.docx`.
-   - Click the **Compare** button in the sidebar.
-   - Select Version 1 and Version 2 and click *"Compare Contracts"*.
-   - Review the Executive Substantive Changes Summary.
-   - Filter by **High Significance** to highlight the liability cap change ($500,000 $\rightarrow$ $1,000,000) and governing law change (New York $\rightarrow$ Delaware).
-6. **Agentic Research Activity (3:30 - 4:15)**:
-   - Expand the **Agentic Research History** accordion in chat.
-   - Show how the model iteratively called `search_document` and `get_section` before finalizing its grounded response.
+1. **Single-Document Query (0:00 - 1:00)**:
+   - Select `saas_agreement_v1.docx`.
+   - Ask: *"What is the liability cap? Quote the exact contractual wording."*
+   - Observe live agent steps (`search_document`, `get_section`).
+   - Notice the answer explicitly states **$500,000** with Section 4 quote:
+     > *"In no event shall either party's aggregate liability arising out of or related to this Agreement exceed the sum of $500,000 (five hundred thousand dollars)."*
+   - Verify the citation badge displays **VERIFIED QUOTE** under Section 4.
+
+2. **Click Quote & View Highlight (1:00 - 1:45)**:
+   - Click *"Open source"* on the citation card.
+   - The right-hand Document Viewer opens `saas_agreement_v1.docx` and pulses the amber highlight over Section 4.
+
+3. **Multi-Document Comparison Query (1:45 - 2:45)**:
+   - Select both `saas_agreement_v1.docx` and `saas_agreement_v2.docx`.
+   - Ask: *"Compare the liability cap in the two contracts. State the old and new amount, with a quote from each document."*
+   - Observe the comparative answer:
+     > *"The liability cap increased from $500,000 in saas_agreement_v1.docx to $1,000,000 in saas_agreement_v2.docx."*
+   - Inspect the two verified citations: one Section 4 quote from V1 and one Section 4 quote from V2.
+
+4. **Safe Failure / Negative Constraint (2:45 - 3:30)**:
+   - Ask: *"What is the penalty for late delivery of physical hardware?"*
+   - Observe the safe fallback answer:
+     > *"I could not find a supported answer in the selected document(s)."*
+   - Confirm zero hallucinated citations are emitted.
+
+5. **Side-by-Side Comparison & Risk Audit (3:30 - 4:30)**:
+   - Open the **Compare** modal.
+   - Review the Executive Summary and High-Significance diffs ($500K $\rightarrow$ $1M cap, New York $\rightarrow$ Delaware governing law).
+   - Open the **Risk Audit** to view automated clause compliance scoring.
+
+---
+
+## Documented Limitations
+
+- **Scanned Image PDFs**: Severely degraded physical scans without embedded OCR text layers are rejected at upload to prevent hallucinated extraction.
+- **Complex Multi-Page Tables**: Tables where column text wraps arbitrarily across page breaks may require paragraph-level token approximation.
+- **Nested Appendices**: Unnumbered exhibits with non-standard bullet notation rely on BM25 body text scoring rather than section heading boosts.

@@ -122,13 +122,13 @@ describe("Agentic Document Research (Part C - Option 2)", () => {
       expect(response.isGrounded).toBe(true);
     });
 
-    it("returns 'I could not find this in the selected document(s)' when query has no matching evidence", async () => {
+    it("returns 'I could not find a supported answer in the selected document(s)' when query has no matching evidence", async () => {
       const response = await runAgenticResearch(
         "What are the spacecraft orbital reentry orbital velocity requirements?",
         [sampleDoc1]
       );
 
-      expect(response.answer).toContain("I could not find this in the selected document(s).");
+      expect(response.answer).toBe("I could not find a supported answer in the selected document(s).");
       expect(response.isGrounded).toBe(false);
       expect(response.citations.length).toBe(0);
     });

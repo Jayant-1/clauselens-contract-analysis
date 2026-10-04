@@ -76,3 +76,90 @@ export interface ActiveHighlight {
   quote: string;
   targetId?: string;
 }
+
+// -------------------------------------------------------------
+// Legal Diligence & Risk Engine Types
+// -------------------------------------------------------------
+
+export type PlaybookType = "enterprise-buyer" | "saas-vendor" | "balanced";
+
+export type RiskSeverity = "critical" | "high" | "medium" | "low" | "compliant";
+
+export type RiskCategory =
+  | "liability"
+  | "indemnity"
+  | "termination"
+  | "data_privacy"
+  | "ip"
+  | "confidentiality"
+  | "governing_law"
+  | "warranties";
+
+export interface RiskFinding {
+  id: string;
+  category: RiskCategory;
+  categoryLabel: string;
+  title: string;
+  severity: RiskSeverity;
+  quote: string;
+  pageNumber: number;
+  analysis: string;
+  businessImpact: string;
+  recommendedAction: string;
+  suggestedFallbackClause?: string;
+}
+
+export interface MissingClauseFinding {
+  id: string;
+  title: string;
+  category: RiskCategory;
+  severity: RiskSeverity;
+  description: string;
+  riskExplanation: string;
+  standardMarketLanguage: string;
+}
+
+export interface ContractHealthAudit {
+  documentId: string;
+  documentName: string;
+  playbook: PlaybookType;
+  overallScore: number;
+  grade: "A" | "B" | "C" | "D";
+  gradeDescription: string;
+  summary: string;
+  findings: RiskFinding[];
+  missingClauses: MissingClauseFinding[];
+  stats: {
+    criticalCount: number;
+    highCount: number;
+    mediumCount: number;
+    lowCount: number;
+    compliantCount: number;
+    missingCount: number;
+  };
+}
+
+export type RedlinePerspective = "buyer" | "seller" | "balanced";
+
+export interface DiffWordItem {
+  value: string;
+  added?: boolean;
+  removed?: boolean;
+}
+
+export interface RedlineProposal {
+  id: string;
+  clauseTitle: string;
+  category: RiskCategory;
+  originalText: string;
+  proposedText: string;
+  perspective: RedlinePerspective;
+  diffParts: DiffWordItem[];
+  counselRationale: string[];
+  counterProposalMemo: {
+    subject: string;
+    recipient: string;
+    body: string;
+  };
+}
+
