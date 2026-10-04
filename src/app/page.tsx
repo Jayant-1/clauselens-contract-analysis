@@ -702,7 +702,7 @@ export default function Home() {
         {!isSidebarOpen && (
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="hidden lg:flex absolute left-3 top-3 z-30 items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-[#E5E5E2] shadow-sm text-xs font-medium text-zinc-700 hover:text-zinc-900 hover:bg-[#F4F4F0] transition-colors"
+            className="hidden lg:flex absolute left-3 top-[72px] z-30 items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white border border-[#E5E5E2] shadow-sm text-xs font-medium text-zinc-700 hover:text-zinc-900 hover:bg-[#F4F4F0] transition-colors"
             title="Expand agreements sidebar (Ctrl+B)"
           >
             <PanelLeftOpen className="w-4 h-4 text-zinc-600" />
